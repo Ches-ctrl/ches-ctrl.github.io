@@ -1,399 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-	<title>Charlie's Website // Built with ChatGPT</title>
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			margin: 0;
-			padding: 0;
-			background-color: #f1f3f6;
-		}
-		
-		header {
-			background-color: #45aaf2;
-			color: #fff;
-			padding: 20px;
-			text-align: center;
-		}
-		
-		h1 {
-			margin: 0;
-			font-size: 36px;
-			font-weight: bold;
-			text-transform: uppercase;
-			letter-spacing: 2px;
-		}
-		
-		nav {
-			background-color: #fff;
-			padding: 10px;
-			box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-		}
-		
-		nav ul {
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-			overflow: hidden;
-		}
-		
-		nav li {
-			float: left;
-		}
-		
-		nav li a {
-			display: block;
-			color: #333;
-			text-align: center;
-			padding: 10px;
-			text-decoration: none;
-			transition: all 0.2s ease;
-		}
-		
-		nav li a:hover {
-			background-color: #f1f3f6;
-			color: #45aaf2;
-		}
-		
-		section {
-			padding: 20px;
-			margin: 0;
-			background-color: #fff;
-			box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-			border-radius: 5px;
-			margin-top: 20px;
-			margin-bottom: 20px;
-		}
-		
-		h2 {
-			margin-top: 0;
-			font-size: 28px;
-			font-weight: bold;
-			text-transform: uppercase;
-			letter-spacing: 1px;
-			color: #45aaf2;
-		}
-		
-		article {
-			margin-bottom: 20px;
-		}
-		
-		article h3 {
-			font-size: 24px;
-			font-weight: bold;
-			margin-top: 0;
-			margin-bottom: 10px;
-		}
-		
-		article p {
-			margin-top: 0;
-			line-height: 1.5;
-		}
-		
-		footer {
-			background-color: #45aaf2;
-			color: #fff;
-			text-align: center;
-			padding: 10px;
-			position: absolute;
-			bottom: 0;
-			width: 100%;
-		}
-		
-		.contact-details {
-			margin-top: 20px;
-			margin-bottom: 20px;
-			padding: 20px;
-			background-color: #fff;
-			box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-			border-radius: 5px;
-		}
-		
-		.subscribe-form {
-			margin-top: 20px;
-			margin-bottom: 20px;
-			padding: 20px;
-			background-color: #fff;
-			box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-			border-radius: 
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-		
-		form label {
-			display: block;
-			margin-bottom: 10px;
-			font-size: 18px;
-			color: #333;
-			font-weight: bold;
-		}
-		
-		form input[type="text"],
-		form input[type="email"] {
-			display: block;
-			width: 100%;
-			padding: 10px;
-			margin-bottom: 20px;
-			font-size: 16px;
-			border-radius: 5px;
-			border: none;
-			box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-		}
-		
-		form input[type="submit"] {
-			background-color: #45aaf2;
-			color: #fff;
-			padding: 10px 20px;
-			border: none;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: all 0.2s ease;
-		}
-		
-		form input[type="submit"]:hover {
-			background-color: #333;
-		}
-		
-		.blog {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0 -20px;
-		}
-		
-		.blog-post {
-			width: calc(33.3333% - 40px);
-			margin: 20px;
-			background-color: #fff;
-			box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-			border-radius: 5px;
-			overflow: hidden;
-			position: relative;
-		}
-		
-		.blog-post img {
-			width: 100%;
-			height: 200px;
-			object-fit: cover;
-		}
-		
-		.blog-post .tags {
-			position: absolute;
-			top: 20px;
-			left: 20px;
-			background-color: #45aaf2;
-			color: #fff;
-			padding: 5px 10px;
-			border-radius: 5px;
-			font-size: 16px;
-			font-weight: bold;
-			text-transform: uppercase;
-			letter-spacing: 1px;
-			z-index: 1;
-		}
-		
-		.blog-post h3 {
-			margin-top: 0;
-			margin-bottom: 10px;
-			font-size: 24px;
-			font-weight: bold;
-			text-align: center;
-		}
-		
-		.blog-post p {
-			margin-top: 0;
-			margin-bottom: 20px;
-			padding: 0 20px;
-			line-height: 1.5;
-		}
-		
-		.tools {
-			display: flex;
-			flex-wrap: wrap;
-			margin: 0 -20px;
-		}
-		
-		.tool {
-			width: calc(50% - 40px);
-			margin: 20px;
-			background-color: #fff;
-			box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-			border-radius: 5px;
-			padding: 20px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-direction: column;
-			text-align: center;
-			position: relative;
-			overflow: hidden;
-		}
-		
-		.tool:hover .overlay {
-			transform: translateY(0);
-		}
-		
-		.tool h3 {
-			margin-top: 0;
-			margin-bottom: 10px;
-			font-size: 24px;
-			font-weight: bold;
-			color: #333;
-		}
-		
-		.tool p {
-			margin-top: 0;
-			margin-bottom: 20px;
-			line-height: 1.5;
-		}
-		
-		.tool .overlay {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0,0,0,0.8);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			transform: translateY(100%);
-			transition: all 0.2s ease;
-		}
-		
-		.tool .overlay h3 {
-			color: #fff;
-			font-size: 24px;
-			font-weight: bold;
-			margin: 0;
-		}
-		
-		.tool .overlay p {
-			color: #fff;
-			margin: 0;
-		}
-		
-	</style>
-</head>
-<body>
-	<header>
-		<h1>Charlie's Website // Built with ChatGPT</h1>
-	</header>
-	
-	<nav>
-		<ul>
-			<li><a href="#">Home</a></li>
-			<li><a href="#">Blog</a></li>
-			<li><a href="#">Tools</a></li>
-			<li><a href="#">Contact</a></li>
-			<li><a href="#">Subscribe</a></li>
-		</ul>
-	</nav>
-	
-	<section>
-		<h2>About</h2>
-		<article>
-			<p>Welcome to Charlie's website, your one-stop-shop for all things tech. We provide reviews, tutorials, and opinions on the latest gadgets and software. Our team of writers and editors are passionate about technology and strive to provide you with accurate and helpful information.</p>
-		</article>
-	</section>
-	
-	<section>
-		<h2>Blog</h2>
-		<div class="blog">
-			<div class="blog-post">
-				<img src="https://via.placeholder.com/800x400.png?text=Blog+Post+Image" alt="Blog Post Image">
-				<div class="tags">Tag 1, Tag 2</div>
-				<h3>Blog Post Title</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel felis eros. Duis volutpat odio ut enim accumsan, eu commodo sapien mollis. In imperdiet, lacus vitae porttitor vulputate, sapien magna porta ex, in tempor magna ipsum eu augue.</p>
-			</div>
-			<div class="blog-post">
-				<img src="https://via.placeholder.com/800x400.png?text=Blog+Post+Image" alt="Blog Post Image">
-				<div class="tags">Tag 1, Tag 2</div>
-				<h3>Blog Post Title</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel felis eros. Duis volutpat odio ut enim accumsan, eu commodo sapien mollis. In imperdiet, lacus vitae porttitor vulputate, sapien magna porta ex, in tempor magna ipsum eu augue.</p>
-			</div>
-			<div class="blog-post">
-				<img src="https://via.placeholder.com/800x400.png?text=Blog+Post+Image" alt="Blog Post Image">
-				<div class="tags">Tag 1, Tag 2</div>
-				<h3>Blog Post Title</h3>
-				<p
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel felis eros. Duis volutpat odio ut enim accumsan, eu commodo sapien mollis. In imperdiet, lacus vitae porttitor vulputate, sapien magna porta ex, in tempor magna ipsum eu augue.</p>
-			</div>
-			<div class="blog-post">
-				<img src="https://via.placeholder.com/800x400.png?text=Blog+Post+Image" alt="Blog Post Image">
-				<div class="tags">Tag 1, Tag 2</div>
-				<h3>Blog Post Title</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel felis eros. Duis volutpat odio ut enim accumsan, eu commodo sapien mollis. In imperdiet, lacus vitae porttitor vulputate, sapien magna porta ex, in tempor magna ipsum eu augue.</p>
-			</div>
-			<div class="blog-post">
-				<img src="https://via.placeholder.com/800x400.png?text=Blog+Post+Image" alt="Blog Post Image">
-				<div class="tags">Tag 1, Tag 2</div>
-				<h3>Blog Post Title</h3>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel felis eros. Duis volutpat odio ut enim accumsan, eu commodo sapien mollis. In imperdiet, lacus vitae porttitor vulputate, sapien magna porta ex, in tempor magna ipsum eu augue.</p>
-			</div>
-		</div>
-	</section>
-	
-	<section>
-		<h2>Tools</h2>
-		<div class="tools">
-			<div class="tool">
-				<img src="https://via.placeholder.com/200x200.png?text=Tool+Logo" alt="Tool Logo">
-				<div class="overlay">
-					<h3>Tool Title</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-				</div>
-			</div>
-			<div class="tool">
-				<img src="https://via.placeholder.com/200x200.png?text=Tool+Logo" alt="Tool Logo">
-				<div class="overlay">
-					<h3>Tool Title</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-				</div>
-			</div>
-			<div class="tool">
-				<img src="https://via.placeholder.com/200x200.png?text=Tool+Logo" alt="Tool Logo">
-				<div class="overlay">
-					<h3>Tool Title</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-				</div>
-			</div>
-			<div class="tool">
-				<img src="https://via.placeholder.com/200x200.png?text=Tool+Logo" alt="Tool Logo">
-				<div class="overlay">
-					<h3>Tool Title</h3>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-				</div>
-			</div>
-		</div>
-	</section>
-	
-	<section>
-		<h2>Contact</h2>
-		<div class="contact-details">
-			<p>Email: charlie@example.com</p>
-			<p>Phone: 555-555-5555</p>
-			<p>Address: 123 Main St, Anytown USA</p>
-		
-		</div>
-		<form action="#" method="post">
-			<label for="name">Name:</label>
-			<input type="text" id="name" name="name" required>
-			
-			<label for="email">Email:</label>
-			<input type="email" id="email" name="email" required>
-			
-			<label for="message">Message:</label>
-			<textarea id="message" name="message" rows="5" required></textarea>
-			
-			<input type="submit" value="Submit">
-		</form>
-	</section>
-	
-	<footer>
-		<p>&copy; 2023 Charlie's Website. All rights reserved.</p>
-	</footer>
-	
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Charlie's Website // Built with ChatGPT</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-65546321-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-65546321-1');
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Charlie's Website</h1>
+        <p>Developer &amp; Designer</p>
+        <nav>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Tools</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="bio">
+          <img src="https://via.placeholder.com/270x270.png?text=Charlie" width="270" height="270" alt="Charlie">
+          <p>I am a developer and designer passionate about creating beautiful and functional websites. You can contact me at charlie@example.com.</p>
+        </div>
+      </header>
+      <section>
+        <h2>About Me</h2>
+        <p>Hi, I'm Charlie! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis accumsan dui eget ex varius luctus. Duis rutrum vitae metus ac hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Etiam bibendum ex sed risus ullamcorper, et faucibus quam posuere. Suspendisse sagittis justo vel euismod consequat.</p>
+        <p>In my free time, I enjoy hiking, reading, and trying new recipes.</p>
+      </section>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+  </body>
 </html>
