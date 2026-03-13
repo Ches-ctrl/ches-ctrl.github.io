@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="page-title">Your Name</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace'],
+          },
+          colors: {
+            accent: '#06b6d4',
+            'accent-dim': '#0891b2',
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+    .prose a:hover { border-bottom-color: #06b6d4; }
+    .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
+  </style>
+</head>
+<body class="bg-[#fafaf9] text-neutral-900 font-sans antialiased min-h-screen">
+  <div class="max-w-2xl mx-auto px-6 py-16 sm:py-24">
+    <header class="mb-16">
+      <div class="accent-line w-16 mb-6"></div>
+      <h1 id="site-name" class="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-neutral-900">Your Name</h1>
+      <nav id="nav" class="mt-8 space-y-1 text-neutral-600">
+        <!-- Nav links injected by JS from config -->
+      </nav>
+    </header>
+
+    <main class="space-y-24">
+      <section id="about" class="section hidden">
+        <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">About</h2>
+        <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
+          <p>Short bio. Where you live, what you do, and a line or two about interests.</p>
+          <p>Edit this section in <code class="font-mono text-sm bg-neutral-100 px-1 rounded">index.html</code>.</p>
+        </div>
+      </section>
+
+      <section id="blog" class="section hidden">
+        <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Blog</h2>
+        <div id="blog-list" class="space-y-4 text-neutral-700">
+          <p class="text-neutral-500">Loading…</p>
+        </div>
+        <div id="blog-post" class="hidden mt-8 prose prose-neutral max-w-none"></div>
+      </section>
+
+      <section id="ideas" class="section hidden">
+        <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Ideas</h2>
+        <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
+          <p>Notes, half-baked thoughts, or a list of ideas you're playing with.</p>
+        </div>
+      </section>
+
+      <section id="contact" class="section hidden">
+        <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Contact</h2>
+        <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
+          <p>Email: <a href="mailto:you@example.com">you@example.com</a></p>
+          <p>Twitter / GitHub / LinkedIn — add your links.</p>
+        </div>
+      </section>
+
+      <section id="bookshelf" class="section hidden">
+        <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Bookshelf</h2>
+        <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
+          <ul class="list-none space-y-2">
+            <li><em>Book Title</em> — Author</li>
+            <li><em>Another Book</em> — Author</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="tech-stack" class="section hidden">
+        <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Tech Stack</h2>
+        <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
+          <p>Languages, tools, and environments you use. Keep it minimal.</p>
+        </div>
+      </section>
+
+      <section id="links" class="section hidden">
+        <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Links</h2>
+        <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
+          <ul class="list-none space-y-2">
+            <li><a href="#">Link one</a></li>
+            <li><a href="#">Link two</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mt-24 pt-8 border-t border-neutral-200 text-neutral-500 text-sm">
+      <p>© <span id="year"></span> <span id="footer-name">Your Name</span></p>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      const config = typeof SITE_CONFIG !== 'undefined' ? SITE_CONFIG : { siteName: 'Your Name', features: {}, navLabels: {} };
+      const features = config.features || {};
+      const labels = config.navLabels || {};
+      const name = config.siteName || config.siteTitle || 'Your Name';
+
+      document.getElementById('site-name').textContent = name;
+      document.getElementById('page-title').textContent = name;
+      document.getElementById('footer-name').textContent = name;
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      const nav = document.getElementById('nav');
+      const sectionIds = ['about', 'blog', 'ideas', 'contact', 'bookshelf', 'techStack', 'links'];
+      sectionIds.forEach(function (id) {
+        if (!features[id]) return;
+        const slug = id === 'techStack' ? 'tech-stack' : id;
+        const label = labels[id] || slug.replace(/-/g, ' ');
+        const a = document.createElement('a');
+        a.href = '#' + slug;
+        a.className = 'block text-neutral-600 hover:text-neutral-900 hover:text-accent transition-colors';
+        a.textContent = label.charAt(0).toUpperCase() + label.slice(1);
+        nav.appendChild(a);
+      });
+
+      sectionIds.forEach(function (id) {
+        const slug = id === 'techStack' ? 'tech-stack' : id;
+        const section = document.getElementById(slug);
+        if (section && features[id]) section.classList.remove('hidden');
+      });
+    })();
+  </script>
+
+  <!-- Blog: load list and render posts -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    (function () {
+      const config = typeof SITE_CONFIG !== 'undefined' ? SITE_CONFIG : {};
+      if (!(config.features && config.features.blog)) return;
+
+      const listEl = document.getElementById('blog-list');
+      const postEl = document.getElementById('blog-post');
+      if (!listEl) return;
+
+      const base = window.location.pathname.replace(/\/index\.html$/, '').replace(/\/$/, '') || '.';
+      const listUrl = base + '/blog/list.json';
+
+      fetch(listUrl)
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (posts) {
+          if (!posts || !posts.length) {
+            listEl.innerHTML = '<p class="text-neutral-500">No posts yet. Add markdown files in <code class="font-mono text-sm bg-neutral-100 px-1 rounded">blog/posts/</code> and run the blog list script.</p>';
+            return;
+          }
+          listEl.innerHTML = '';
+          posts.forEach(function (p) {
+            const a = document.createElement('a');
+            a.href = '#blog-post-' + (p.slug || p.file || '');
+            a.className = 'block text-neutral-700 hover:text-accent transition-colors';
+            a.textContent = p.title || p.slug || p.file;
+            const meta = document.createElement('span');
+            meta.className = 'text-neutral-500 text-sm block mt-0.5';
+            meta.textContent = p.date || '';
+            a.appendChild(meta);
+            a.addEventListener('click', function (e) {
+              e.preventDefault();
+              loadPost(p);
+            });
+            listEl.appendChild(a);
+          });
+        })
+        .catch(function () {
+          listEl.innerHTML = '<p class="text-neutral-500">No blog list found. Add <code class="font-mono text-sm bg-neutral-100 px-1 rounded">blog/list.json</code>.</p>';
+        });
+
+      function loadPost(p) {
+        const slug = (p.slug || p.file || '').replace(/\.md$/, '');
+        const url = base + '/blog/posts/' + (p.file || slug + '.md');
+        postEl.classList.remove('hidden');
+        postEl.innerHTML = '<p class="text-neutral-500">Loading…</p>';
+        fetch(url)
+          .then(function (r) { return r.text(); })
+          .then(function (md) {
+            const html = marked.parse(md);
+            postEl.innerHTML = html;
+            postEl.querySelectorAll('a').forEach(function (a) { a.classList.add('text-accent'); });
+            postEl.scrollIntoView({ behavior: 'smooth' });
+          })
+          .catch(function () {
+            postEl.innerHTML = '<p class="text-neutral-500">Could not load post.</p>';
+          });
+      }
+    })();
+  </script>
+</body>
+</html>
