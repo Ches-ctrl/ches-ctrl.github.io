@@ -3,8 +3,8 @@
  * Set any section to false to hide it from the nav and page.
  */
 const SITE_CONFIG = {
-  siteName: "Your Name",
-  siteTitle: "Your Name",
+  siteName: "Charlie Cheesman",
+  siteTitle: "Charlie Cheesman",
 
   // Feature flags: set to false to hide a section
   features: {

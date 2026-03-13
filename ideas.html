@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ideas — Charlie Cheesman</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Fraunces', 'Georgia', 'serif'],
+            sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace'],
+          },
+          colors: { accent: '#06b6d4', 'accent-dim': '#0891b2' },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+    .prose a:hover { border-bottom-color: #06b6d4; }
+    .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
+  </style>
+</head>
+<body class="bg-[#fafaf9] text-neutral-900 font-sans antialiased min-h-screen flex flex-col">
+  <div class="max-w-2xl mx-auto px-6 py-16 sm:py-24 flex-1 flex flex-col">
+    <header class="mb-12">
+      <div class="accent-line w-16 mb-6"></div>
+      <p class="text-neutral-500 text-sm mb-2"><a href="index.html" class="text-accent hover:underline">← Home</a></p>
+    </header>
+
+    <main>
+      <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Ideas</h2>
+      <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
+        <p>Notes, half-baked thoughts, or a list of ideas you're playing with.</p>
+      </div>
+    </main>
+
+    <footer class="mt-auto pt-8 border-t border-neutral-200 text-neutral-500 text-sm">
+      <p>© <span id="year"></span></p>
+    </footer>
+  </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
