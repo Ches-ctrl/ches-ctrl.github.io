@@ -28,6 +28,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     html { scroll-behavior: smooth; }
+    body { visibility: hidden; }
     .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
     .prose a:hover { border-bottom-color: #06b6d4; }
     .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
@@ -80,6 +81,12 @@
         a.className = 'block text-neutral-600 hover:text-neutral-900 hover:text-accent transition-colors';
         a.textContent = label.charAt(0).toUpperCase() + label.slice(1);
         nav.appendChild(a);
+      });
+
+      document.fonts.ready.then(function () {
+        requestAnimationFrame(function () {
+          document.body.style.visibility = 'visible';
+        });
       });
     })();
   </script>
