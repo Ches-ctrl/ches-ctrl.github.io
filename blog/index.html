@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog — Charlie Cheesman</title>
-  <script src="config.js"></script>
+  <script src="../config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -34,7 +34,7 @@
   <div class="max-w-2xl pl-12 pr-6 pt-10 pb-16 sm:pt-14 flex-1 flex flex-col">
     <header class="mb-4">
       <div class="accent-line w-16 mb-6"></div>
-      <p class="text-neutral-500 text-sm mb-2"><a href="index.html" class="text-accent hover:underline">← Home</a></p>
+      <p class="text-neutral-500 text-sm mb-2"><a href="../" class="text-accent hover:underline">← Home</a></p>
     </header>
 
     <main>
@@ -56,8 +56,7 @@
     (function () {
       const listEl = document.getElementById('blog-list');
       const postEl = document.getElementById('blog-post');
-      const base = window.location.pathname.replace(/\/blog\.html$/, '').replace(/\/$/, '') || '.';
-      const listUrl = base + '/blog/list.json';
+      const listUrl = 'list.json';
 
       fetch(listUrl)
         .then(function (r) { return r.ok ? r.json() : []; })
@@ -89,7 +88,7 @@
 
       function loadPost(p) {
         const slug = (p.slug || p.file || '').replace(/\.md$/, '');
-        const url = base + '/blog/posts/' + (p.file || slug + '.md');
+        const url = 'posts/' + (p.file || slug + '.md');
         postEl.classList.remove('hidden');
         postEl.innerHTML = '<p class="text-neutral-500">Loading…</p>';
         fetch(url)
