@@ -24,6 +24,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
+    body { visibility: hidden; }
     .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
     .prose a:hover { border-bottom-color: #06b6d4; }
     .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
@@ -38,9 +39,18 @@
 
     <main>
       <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">About</h2>
-      <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
-        <p>Short bio. Where you live, what you do, and a line or two about interests.</p>
-        <p>Edit this section in <code class="font-mono text-sm bg-neutral-100 px-1 rounded">about.html</code>.</p>
+      <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed space-y-4">
+        <p>Co-Founder and CEO of <a href="https://60x.ai">60x.ai</a>. Based in London.</p>
+
+        <p>60x helps enterprise leaders get from AI ambition to AI outcomes - AI strategy and build under one roof working backwards from business outcomes to the fastest path to value.</p>
+
+        <p>Before 60x: 5 years at EY-Parthenon advising Fortune 500 and FTSE 100 companies. Set up the EY-Parthenon AI Lab and wrote the UK AI strategy. Clients spanned F1, Formula E, US retail, and PE-backed tech.</p>
+
+        <p>In August 2025: built, launched, and sold a company in 20 hours at a Stockholm hackathon - the fastest exit in Europe.</p>
+
+        <p>Also run community engineering at <a href="https://unicornmafia.dev">Unicorn Mafia</a> - a developer community of 1000+ engineers across Europe.</p>
+
+        <p>Oxford, Economics &amp; Management. Dropped out of Durham Engineering to get there.</p>
       </div>
     </main>
 
@@ -48,6 +58,6 @@
       <p>© <span id="year"></span></p>
     </footer>
   </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear(); document.fonts.ready.then(function () { requestAnimationFrame(function () { document.body.style.visibility = 'visible'; }); });</script>
 </body>
 </html>
