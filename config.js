@@ -9,12 +9,12 @@ const SITE_CONFIG = {
   // Feature flags: set to false to hide a section
   features: {
     about: true,
-    blog: true,
-    ideas: true,
-    contact: true,
-    bookshelf: true,
-    techStack: true,
-    links: true,
+    blog: false,
+    ideas: false,
+    contact: false,
+    bookshelf: false,
+    techStack: false,
+    links: false,
   },
 
   // Optional: link labels (defaults to section key)
