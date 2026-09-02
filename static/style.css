@@ -69,7 +69,12 @@ main h1, main h2, main h3 {
   margin: 0;
 }
 
-main h2 { margin-top: 2em; }
+/* He sets no heading sizes, but titles with h2 — so his largest heading lands on
+   the browser default 1.5em. Page titles here are h1, which would default to 2em
+   and overshoot anything on his site. Sizes declared to match his rendered scale. */
+main h1 { font-size: 1.5em; }
+main h2 { font-size: 1.17em; margin-top: 2em; }
+main h3 { font-size: 1em; margin-top: 1.5em; }
 
 main p, main ul, main ol {
   color: #333;
