@@ -1,49 +1,61 @@
-# Personal site (GitHub Pages)
+# charliecheesman.net
 
-Minimal single-page site with Tailwind, feature flags, and a markdown blog. Inspired by Patrick Collison and Paul Graham.
+Static HTML, one stylesheet, no webfonts, no client-side JavaScript.
+Served by GitHub Pages from the repo root on `main`.
 
-## Setup
+Modelled on [paulgraham.com](https://www.paulgraham.com) and
+[patrickcollison.com](https://patrickcollison.com): left-aligned, vertical index, the HTML
+contains the text, every piece of writing has a real URL, and nothing blocks the first paint.
 
-1. **Edit `config.js`**  
-   Set `siteName` and toggle `features` to show/hide sections (About, Blog, Ideas, Contact, Bookshelf, Tech Stack, Links).
+## Add a blog post
 
-2. **Edit `index.html`**  
-   Update the content in each `<section>` (About, Ideas, Contact, Bookshelf, Tech Stack, Links). Replace placeholder links and text.
+1. Create `blog/posts/<slug>.md`. The filename becomes the URL.
 
-3. **Local preview**  
-   Open `index.html` in a browser, or use a static server (e.g. `npx serve .`) so the blog list and posts load correctly.
+   ```markdown
+   ---
+   title: How to do great work
+   date: 2026-08-14
+   ---
 
-## Blog
+   Body text in Markdown.
+   ```
 
-- **Add a post:** Create a file in `blog/posts/`, e.g. `blog/posts/2025-03-13-hello.md`.
-- **Frontmatter (optional):**
-  ```yaml
-  ---
-  title: My post title
-  date: 2025-03-13
-  ---
-  ```
-- **Refresh the blog list:**  
-  Run:
-  ```bash
-  node scripts/generate-blog-list.js
-  ```
-  This overwrites `blog/list.json` from all `.md` files in `blog/posts/`. Commit the updated `blog/list.json` and new post.
+   Add `draft: true` to keep it out of the build.
 
-## GitHub Pages
+2. Build, check it, ship it:
 
-- **User/org site:** Repo name must be `username.github.io`. Push to `main`; the site is at `https://username.github.io`.
-- **Project site:** In the repo **Settings → Pages**, set source to the default branch and root (or `/docs` if you put the site there).
+   ```bash
+   npm run build
+   npm run serve      # http://localhost:3000
+   git add -A && git commit -m "post: how to do great work" && git push
+   ```
 
-Use relative paths (already in the project); the site works at the repo root.
+`blog/posts/how-to-do-great-work.md` is served at `/blog/how-to-do-great-work/`.
+Renaming, deleting or drafting a post removes its old page on the next build.
 
-## Feature flags
+## Edit a page
 
-In `config.js`, set any of these to `false` to hide that section and its nav link:
+Content lives in `pages/<name>.html` as a fragment — no `<head>`, no nav, no boilerplate,
+just the content of that page. `npm run build` wraps it in the shared shell.
 
-- `about`, `blog`, `ideas`, `contact`, `bookshelf`, `techStack`, `links`
+To add or rename a nav entry, edit `site.json`. To add a whole section, create
+`pages/<name>.html` and add an entry with a matching `"page"` key.
 
-## Tech
+## Layout
 
-- Static HTML + Tailwind (CDN) + vanilla JS
-- Blog: markdown in `blog/posts/`, list in `blog/list.json`, client-side render with [marked](https://marked.js.org/)
+```
+pages/*.html        page content (fragments) — edit these
+blog/posts/*.md     post sources — edit these
+site.json           site name + nav
+
+index.html          generated
+about/ ideas/ ...   generated
+blog/<slug>/        generated
+static/style.css    the only stylesheet
+scripts/build.js    the build; the page shell is defined once, in shell()
+```
+
+Anything marked generated is overwritten by `npm run build` — edit the source, not the output.
+
+`marked` is the only dependency and runs at build time to turn Markdown into HTML.
+Nothing ships to the browser.

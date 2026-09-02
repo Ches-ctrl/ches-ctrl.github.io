@@ -1,0 +1,4 @@
+.DS_Store
+node_modules/
+# guard against stray dirs from unexpanded ~ in quoted paths
+/~/

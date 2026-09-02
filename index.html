@@ -1,94 +1,29 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title id="page-title">Charlie Cheesman</title>
-  <script src="config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['Fraunces', 'Georgia', 'serif'],
-            sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
-            mono: ['IBM Plex Mono', 'monospace'],
-          },
-          colors: {
-            accent: '#06b6d4',
-            'accent-dim': '#0891b2',
-          },
-        },
-      },
-    };
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    html { scroll-behavior: smooth; }
-    body { visibility: hidden; }
-    .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
-    .prose a:hover { border-bottom-color: #06b6d4; }
-    .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charlie Cheesman</title>
+<link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="bg-[#fafaf9] text-neutral-900 font-sans antialiased min-h-screen flex flex-col text-sm">
-  <div class="max-w-2xl pl-12 pr-6 pt-10 pb-16 sm:pt-14 flex-1 flex flex-col">
-    <header class="mb-12">
-      <div class="accent-line w-16 mb-5"></div>
-      <h1 id="site-name" class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-neutral-900">Charlie Cheesman</h1>
-      <nav id="nav" class="mt-6 space-y-1 text-neutral-600">
-        <!-- Nav links injected by JS from config -->
-      </nav>
-    </header>
+<body>
+<div class="page">
+  <aside>
+    <div class="accent"></div>
+    <p class="name"><a href="/">Charlie Cheesman</a></p>
+    <nav>
+      <a href="/about/">About</a>
+      <a href="/blog/">Blog</a>
+      <a href="/ideas/">Ideas</a>
+      <a href="/bookshelf/">Bookshelf</a>
+      <a href="/tech-stack/">Tech stack</a>
+      <a href="/links/">Links</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </aside>
+  <main>
 
-    <footer class="mt-auto pt-8 border-t border-neutral-200 text-neutral-500 text-sm">
-      <p>© <span id="year"></span> <span id="footer-name">Charlie Cheesman</span></p>
-    </footer>
-  </div>
-
-  <script>
-    (function () {
-      const config = typeof SITE_CONFIG !== 'undefined' ? SITE_CONFIG : { siteName: 'Charlie Cheesman', features: {}, navLabels: {} };
-      const features = config.features || {};
-      const labels = config.navLabels || {};
-      const name = config.siteName || config.siteTitle || 'Charlie Cheesman';
-
-      document.getElementById('site-name').textContent = name;
-      document.getElementById('page-title').textContent = name;
-      document.getElementById('footer-name').textContent = name;
-      document.getElementById('year').textContent = new Date().getFullYear();
-
-      const pageUrls = {
-        about: 'about/',
-        blog: 'blog/',
-        ideas: 'ideas/',
-        contact: 'contact/',
-        bookshelf: 'bookshelf/',
-        techStack: 'tech-stack/',
-        links: 'links/',
-      };
-
-      const nav = document.getElementById('nav');
-      const sectionIds = ['about', 'blog', 'ideas', 'contact', 'bookshelf', 'techStack', 'links'];
-      sectionIds.forEach(function (id) {
-        if (!features[id]) return;
-        const label = labels[id] || (id === 'techStack' ? 'tech stack' : id).replace(/-/g, ' ');
-        const a = document.createElement('a');
-        a.href = pageUrls[id] || (id + '.html');
-        a.className = 'block text-neutral-600 hover:text-neutral-900 hover:text-accent transition-colors';
-        a.textContent = label.charAt(0).toUpperCase() + label.slice(1);
-        nav.appendChild(a);
-      });
-
-      document.fonts.ready.then(function () {
-        requestAnimationFrame(function () {
-          document.body.style.visibility = 'visible';
-        });
-      });
-    })();
-  </script>
+  </main>
+</div>
 </body>
 </html>

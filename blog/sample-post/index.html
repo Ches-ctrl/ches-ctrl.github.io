@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample post · Charlie Cheesman</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="page">
+  <aside>
+    <div class="accent"></div>
+    <p class="name"><a href="/">Charlie Cheesman</a></p>
+    <nav>
+      <a href="/about/">About</a>
+      <a href="/blog/" class="current">Blog</a>
+      <a href="/ideas/">Ideas</a>
+      <a href="/bookshelf/">Bookshelf</a>
+      <a href="/tech-stack/">Tech stack</a>
+      <a href="/links/">Links</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </aside>
+  <main>
+<article>
+<h1>Sample post</h1>
+<p class="byline">2 September 2026</p>
+<p>This is a sample post so you can see how the format renders. Delete the file and run
+<code>npm run build</code> when you want it gone.</p>
+<p>Everything above the second <code>---</code> is frontmatter. <code>title</code> sets the heading and the browser
+tab, <code>date</code> sets the byline and the sort order on the blog index. Add <code>draft: true</code> to keep
+a post out of the build while you work on it.</p>
+<h2>Headings become sections</h2>
+<p>Body text is ordinary Markdown. You get <strong>bold</strong>, <em>italic</em>, <code>inline code</code>, and
+<a href="https://patrickcollison.com">links</a> without thinking about it.</p>
+<p>Lists work as expected:</p>
+<ul>
+<li>One item</li>
+<li>Another item</li>
+<li>A third</li>
+</ul>
+<p>And numbered ones:</p>
+<ol>
+<li>First</li>
+<li>Second</li>
+</ol>
+<blockquote>
+<p>Block quotes look like this — useful for pulling out a line from something you&#39;re
+responding to.</p>
+</blockquote>
+<p>Code blocks keep their whitespace:</p>
+<pre><code class="language-bash">npm run build
+git add -A &amp;&amp; git commit -m &quot;post: sample&quot; &amp;&amp; git push
+</code></pre>
+<hr>
+<p>A horizontal rule gives you a section break when a heading would be too heavy.</p>
+<p>The filename becomes the URL. This file is <code>blog/posts/sample-post.md</code>, so it is served at
+<code>/blog/sample-post/</code> — a real page, linkable and indexable, with the text in the HTML.</p>
+</article>
+<p class="more"><a href="/blog/">← All posts</a></p>
+  </main>
+</div>
+</body>
+</html>

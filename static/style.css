@@ -1,0 +1,118 @@
+/* charliecheesman.net — one stylesheet, no webfonts, no framework.
+   Type and spacing are Patrick Collison's exact values (patrickcollison.com/static/style.css),
+   with the index moved to the left. See CLAUDE.md before changing any of it. */
+
+:root {
+  --link: #0864c7;
+  --accent: #06b6d4;
+  --sidebar: 150px;
+  --gap: 50px;
+  --measure: 500px;
+  /* his menu + heading stack; Myriad Pro falls back for nearly everyone */
+  --display: "Myriad Pro", "Helvetica Neue", Helvetica;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 30px 20px 80px;
+  background: #fff;
+  font-family: Helvetica;
+  font-size: 13px;
+}
+
+/* Left-aligned: vertical index, then content. */
+.page {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
+}
+
+/* ---- vertical index (his #menu, moved left) ---- */
+
+aside {
+  width: var(--sidebar);
+  flex: 0 0 var(--sidebar);
+  font-family: var(--display);
+}
+
+.accent {
+  height: 2px;
+  width: 64px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+}
+
+.name { margin: 0; }
+.name a { color: #000; text-decoration: none; }
+
+nav { display: flex; flex-direction: column; }
+
+nav a { color: var(--link); text-decoration: none; }
+nav a:hover { text-decoration: underline; }
+nav a.current { color: #000; }
+
+/* ---- content (his #content) ---- */
+
+main {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: var(--measure);
+  margin-top: 15px;
+}
+
+main h1, main h2, main h3 {
+  font-family: var(--display);
+  margin: 0;
+}
+
+main h2 { margin-top: 2em; }
+
+main p, main ul, main ol {
+  color: #333;
+  line-height: 18px;
+}
+
+main a, main a:visited { color: var(--link); }
+
+main li { margin-bottom: 0.7em; }
+
+.byline, .byline a { font-size: 10px; color: #aaa; }
+
+.more { margin-top: 2em; }
+
+.lede { color: #777; }
+
+hr { border: 0; border-top: 1px solid #eee; margin: 2em 0; }
+
+code { font-family: Menlo, Monaco, monospace; font-size: 11px; }
+
+pre {
+  background: #f7f7f7;
+  padding: 10px 12px;
+  overflow-x: auto;
+  line-height: 16px;
+}
+
+blockquote { margin: 1em 0 1em 20px; color: #777; }
+
+img { max-width: 100%; height: auto; }
+
+/* ---- lists of things (blog index, links, bookshelf) ---- */
+
+.entries { list-style-type: none; margin: 0; padding: 0; }
+.entries li { margin-bottom: 0.7em; }
+.entries .meta { display: block; font-size: 10px; color: #aaa; }
+
+/* ---- narrow screens: index stacks above content ---- */
+
+@media (max-width: 640px) {
+  body { padding: 24px 18px 48px; }
+  .page { display: block; }
+  aside { width: auto; margin-bottom: 24px; }
+  nav { flex-direction: row; flex-wrap: wrap; gap: 0 14px; }
+  main { margin-top: 0; }
+}

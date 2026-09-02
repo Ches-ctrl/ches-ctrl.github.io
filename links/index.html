@@ -1,56 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Links — Charlie Cheesman</title>
-  <script src="../config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['Fraunces', 'Georgia', 'serif'],
-            sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
-            mono: ['IBM Plex Mono', 'monospace'],
-          },
-          colors: { accent: '#06b6d4', 'accent-dim': '#0891b2' },
-        },
-      },
-    };
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    body { visibility: hidden; }
-    .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
-    .prose a:hover { border-bottom-color: #06b6d4; }
-    .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Links · Charlie Cheesman</title>
+<link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="bg-[#fafaf9] text-neutral-900 font-sans antialiased min-h-screen flex flex-col text-sm">
-  <div class="max-w-2xl pl-12 pr-6 pt-10 pb-16 sm:pt-14 flex-1 flex flex-col">
-    <header class="mb-4">
-      <div class="accent-line w-16 mb-6"></div>
-      <p class="text-neutral-500 text-sm mb-2"><a href="../" class="text-accent hover:underline">← Home</a></p>
-    </header>
+<body>
+<div class="page">
+  <aside>
+    <div class="accent"></div>
+    <p class="name"><a href="/">Charlie Cheesman</a></p>
+    <nav>
+      <a href="/about/">About</a>
+      <a href="/blog/">Blog</a>
+      <a href="/ideas/">Ideas</a>
+      <a href="/bookshelf/">Bookshelf</a>
+      <a href="/tech-stack/">Tech stack</a>
+      <a href="/links/" class="current">Links</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </aside>
+  <main>
+<h1>Links</h1>
 
-    <main>
-      <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Links</h2>
-      <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
-        <ul class="list-none space-y-2">
-          <li><a href="#">Link one</a></li>
-          <li><a href="#">Link two</a></li>
-        </ul>
-      </div>
-    </main>
+<p class="lede">Things worth reading that I keep coming back to.</p>
 
-    <footer class="mt-auto pt-8 border-t border-neutral-200 text-neutral-500 text-sm">
-      <p>© <span id="year"></span></p>
-    </footer>
-  </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear(); document.fonts.ready.then(function () { requestAnimationFrame(function () { document.body.style.visibility = 'visible'; }); });</script>
+<!-- TODO(charlie): add entries. Pattern:
+<ul class="entries">
+  <li><a href="https://example.com">Title</a><span class="meta">Why it is here.</span></li>
+</ul>
+-->
+  </main>
+</div>
 </body>
 </html>
