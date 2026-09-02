@@ -62,7 +62,7 @@ request. Don't "improve" them:
 | Body | `Helvetica`, 13px |
 | Body copy | `#333`, `line-height: 18px` (a length, not a ratio — deliberate) |
 | Headings | `"Myriad Pro", "Helvetica Neue", Helvetica`, `margin: 0`, h2 `margin-top: 2em` |
-| Links | `#0864c7` |
+| Links | `#0864c7`, with `a:visited` pinned to the same blue — deliberate, not an oversight |
 | Byline / meta | 10px `#aaa` |
 | List items | `margin-bottom: 0.7em` |
 | Measure | 500px; index column 150px |

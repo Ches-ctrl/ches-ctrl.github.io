@@ -76,6 +76,8 @@ main p, main ul, main ol {
   line-height: 18px;
 }
 
+/* :visited pinned to the same blue on purpose — his rule. Not an oversight:
+   without it the browser would default visited links to purple. */
 main a, main a:visited { color: var(--link); }
 
 main li { margin-bottom: 0.7em; }
