@@ -51,8 +51,8 @@ aside {
 
 nav { display: flex; flex-direction: column; }
 
-nav a { color: var(--link); text-decoration: none; }
-nav a:hover { text-decoration: underline; }
+/* underlined, as his are — browser default, not overridden */
+nav a { color: var(--link); }
 nav a.current { color: #000; }
 
 /* ---- content (his #content) ---- */
