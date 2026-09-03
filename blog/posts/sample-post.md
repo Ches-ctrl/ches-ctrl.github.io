@@ -26,7 +26,7 @@ And numbered ones:
 1. First
 2. Second
 
-> Block quotes look like this — useful for pulling out a line from something you're
+> Block quotes look like this - useful for pulling out a line from something you're
 > responding to.
 
 Code blocks keep their whitespace:
@@ -41,4 +41,4 @@ git add -A && git commit -m "post: sample" && git push
 A horizontal rule gives you a section break when a heading would be too heavy.
 
 The filename becomes the URL. This file is `blog/posts/sample-post.md`, so it is served at
-`/blog/sample-post/` — a real page, linkable and indexable, with the text in the HTML.
+`/blog/sample-post/` - a real page, linkable and indexable, with the text in the HTML.
