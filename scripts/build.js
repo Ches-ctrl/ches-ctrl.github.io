@@ -219,7 +219,11 @@ function buildBlog(posts) {
       '\n</ul>'
     : '<p class="lede">Nothing published yet.</p>';
 
-  write('blog/index.html', shell({ title: `Blog · ${SITE.name}`, currentPath: '/blog/', body: `<h1>Blog</h1>\n${list}`, source: 'blog/posts/ (generated index)' }));
+  // The feed is declared in every page's <head> for readers that autodiscover it;
+  // this is the visible link, for people who subscribe by hand.
+  const feed = '<p class="more"><a href="/feed.xml">Atom feed</a></p>';
+
+  write('blog/index.html', shell({ title: `Blog · ${SITE.name}`, currentPath: '/blog/', body: `<h1>Blog</h1>\n${list}\n${feed}`, source: 'blog/posts/ (generated index)' }));
 
   return posts.length;
 }
