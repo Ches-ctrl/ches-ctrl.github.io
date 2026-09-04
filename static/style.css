@@ -57,13 +57,6 @@ nav a.current { color: #000; }
 
 /* ---- content (his #content) ---- */
 
-.headshot {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  display: block;
-  margin: 0 0 1.4em;
-}
 
 
 main {
