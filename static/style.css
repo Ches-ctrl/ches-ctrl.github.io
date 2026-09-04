@@ -109,18 +109,18 @@ blockquote { margin: 1em 0 1em 20px; color: #777; }
 img { max-width: 100%; height: auto; }
 
 /* ---- career timeline ---- */
+/* Date column, vertical rule, then the entry. Logo sits with the title. */
 
 .timeline { margin-top: 1.5em; }
 
 .timeline .entry {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding-bottom: 1.8em;
+  gap: 18px;
+  padding-bottom: 1.7em;
 }
 
 .timeline .when {
-  flex: 0 0 66px;
+  flex: 0 0 62px;
   color: #aaa;
   font-size: 10px;
   line-height: 15px;
@@ -128,10 +128,24 @@ img { max-width: 100%; height: auto; }
   padding-top: 4px;
 }
 
+.timeline .what {
+  flex: 1 1 auto;
+  min-width: 0;
+  border-left: 1px solid #e5e5e5;
+  padding-left: 18px;
+}
+
+.timeline .head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
 .timeline .logo {
   flex: 0 0 26px;
   display: block;
   line-height: 0;
+  padding-top: 1px;
 }
 
 .timeline .logo img,
@@ -153,17 +167,12 @@ img { max-width: 100%; height: auto; }
   font-weight: bold;
 }
 
-.timeline .what { flex: 1 1 auto; min-width: 0; }
-
-.timeline .what h3 { margin: 0 0 0.15em; }
-.timeline .what p { margin: 0 0 0.5em; }
-.timeline .what p:last-child { margin-bottom: 0; }
-
-.timeline .where { color: #aaa; font-size: 10px; }
+.timeline h3 { margin: 0 0 0.15em; }
+.timeline .where { color: #aaa; font-size: 10px; margin: 0; }
 
 /* several roles at one organisation */
-.timeline .roles { margin: 0.6em 0 0; padding: 0; list-style: none; }
-.timeline .roles li { margin-bottom: 0.6em; }
+.timeline .roles { margin: 0.7em 0 0 36px; padding: 0; list-style: none; }
+.timeline .roles li { margin-bottom: 0.45em; }
 .timeline .roles li:last-child { margin-bottom: 0; }
 .timeline .roles .title { font-weight: bold; }
 
@@ -181,7 +190,7 @@ img { max-width: 100%; height: auto; }
   aside { width: auto; margin-bottom: 24px; }
   nav { flex-direction: row; flex-wrap: wrap; gap: 0 14px; }
   main { margin-top: 0; }
-  .timeline .entry { flex-wrap: wrap; gap: 10px; }
-  .timeline .when { flex: 0 0 auto; text-align: left; padding-top: 6px; }
-  .timeline .what { flex: 1 1 100%; }
+  .timeline .entry { display: block; }
+  .timeline .when { text-align: left; margin-bottom: 0.35em; }
+  .timeline .what { border-left: 0; padding-left: 0; }
 }
