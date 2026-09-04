@@ -112,11 +112,16 @@ function externalLinks(html) {
   });
 }
 
+/** Strip TODO notes from output. They are working notes in pages/, not for the published source. */
+function stripNotes(html) {
+  return html.replace(/\n?[ \t]*<!--\s*TODO\(charlie\)[\s\S]*?-->/g, '');
+}
+
 // ---------------------------------------------------------------- pages
 
 function buildPages() {
   // Home
-  write('index.html', shell({ title: SITE.name, currentPath: '/', body: externalLinks(inlineLogos(read('pages/index.html').trimEnd())), source: 'pages/index.html' }));
+  write('index.html', shell({ title: SITE.name, currentPath: '/', body: stripNotes(externalLinks(inlineLogos(read('pages/index.html').trimEnd()))), source: 'pages/index.html' }));
 
   // Section pages
   SITE.nav
@@ -128,7 +133,7 @@ function buildPages() {
         shell({
           title: `${n.label} · ${SITE.name}`,
           currentPath: n.path,
-          body: externalLinks(inlineLogos(read(`pages/${n.page}.html`).trimEnd())),
+          body: stripNotes(externalLinks(inlineLogos(read(`pages/${n.page}.html`).trimEnd()))),
           source: `pages/${n.page}.html`,
         })
       );
