@@ -187,7 +187,7 @@ img { max-width: 100%; height: auto; }
 
 /* ---- lists of things (blog index, links, bookshelf) ---- */
 
-.entries { list-style-type: none; margin: 0; padding: 0; }
+.entries { list-style-type: none; margin: 1.2em 0 0; padding: 0; }
 .entries li { margin-bottom: 0.7em; }
 .entries .meta { display: block; font-size: 10px; color: #aaa; }
 

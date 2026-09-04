@@ -33,7 +33,7 @@ function write(relPath, html) {
 // ---------------------------------------------------------------- the shell
 
 /** The only place page boilerplate is defined. */
-function shell({ title, currentPath, body }) {
+function shell({ title, currentPath, body, source = 'pages/' }) {
   const nav = SITE.nav
     .map((n) => {
       const current = n.path === currentPath ? ' class="current"' : '';
@@ -43,7 +43,10 @@ function shell({ title, currentPath, body }) {
     })
     .join('\n');
 
-  return `<!doctype html>
+  return `<!-- GENERATED FILE - DO NOT EDIT.
+     Your changes here are overwritten by the next \`npm run build\`.
+     Edit the source instead: ${esc(source)} -->
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -94,7 +97,7 @@ function inlineLogos(html) {
 
 function buildPages() {
   // Home
-  write('index.html', shell({ title: SITE.name, currentPath: '/', body: inlineLogos(read('pages/index.html').trimEnd()) }));
+  write('index.html', shell({ title: SITE.name, currentPath: '/', body: inlineLogos(read('pages/index.html').trimEnd()), source: 'pages/index.html' }));
 
   // Section pages
   SITE.nav
@@ -107,6 +110,7 @@ function buildPages() {
           title: `${n.label} · ${SITE.name}`,
           currentPath: n.path,
           body: inlineLogos(read(`pages/${n.page}.html`).trimEnd()),
+          source: `pages/${n.page}.html`,
         })
       );
     });
@@ -175,7 +179,7 @@ function buildBlog(posts) {
       (p.date ? `<p class="byline">${esc(formatDate(p.date))}</p>\n` : '') +
       p.html +
       `</article>\n<p class="more"><a href="/blog/">← All posts</a></p>`;
-    write(`blog/${p.slug}/index.html`, shell({ title: `${p.title} · ${SITE.name}`, currentPath: '/blog/', body }));
+    write(`blog/${p.slug}/index.html`, shell({ title: `${p.title} · ${SITE.name}`, currentPath: '/blog/', body, source: `blog/posts/${p.slug}.md` }));
   });
 
   const list = posts.length
@@ -191,7 +195,7 @@ function buildBlog(posts) {
       '\n</ul>'
     : '<p class="lede">Nothing published yet.</p>';
 
-  write('blog/index.html', shell({ title: `Blog · ${SITE.name}`, currentPath: '/blog/', body: `<h1>Blog</h1>\n${list}` }));
+  write('blog/index.html', shell({ title: `Blog · ${SITE.name}`, currentPath: '/blog/', body: `<h1>Blog</h1>\n${list}`, source: 'blog/posts/ (generated index)' }));
 
   return posts.length;
 }
