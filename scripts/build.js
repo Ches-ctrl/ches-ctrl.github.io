@@ -37,7 +37,9 @@ function shell({ title, currentPath, body }) {
   const nav = SITE.nav
     .map((n) => {
       const current = n.path === currentPath ? ' class="current"' : '';
-      return `      <a href="${n.path}"${current}>${esc(n.label)}</a>`;
+      // links off-site open in a new tab, so the site itself is never navigated away from
+      const external = /^https?:\/\//.test(n.path) ? ' target="_blank" rel="noopener"' : '';
+      return `      <a href="${n.path}"${current}${external}>${esc(n.label)}</a>`;
     })
     .join('\n');
 
