@@ -49,8 +49,23 @@ markdown. Adding a section: create `pages/<name>.html`, add the entry, rebuild.
 Every entry also carries a `description` — that is the meta description, and the text under the
 link when the page is shared. It is copy, not configuration: write it for a human reading a
 search result, keep it under about 155 characters, and don't leave it off a new section. The top
-level of `site.json` holds `jobTitle`, `description`, `image`, `sameAs`, `worksFor`, `alumniOf`
-and `knowsAbout`, which feed the home page's metadata and its structured data.
+level of `site.json` holds `jobTitle`, `description`, `image`, `photo`, `address`, `sameAs`,
+`worksFor`, `alumniOf` and `knowsAbout`, which feed the home page's metadata and its structured
+data.
+
+`image` and `photo` are not interchangeable. `image` is `static/og.png`, the social preview card,
+and it is what every page's `og:image` points at. `photo` is an actual photograph of Charlie and
+is used only for `Person.image` in the JSON-LD, because Google wants a face there and a text card
+earns nothing. Neither is ever fetched by a browser - only by a scraper or a crawler - so their
+weight is off the critical path and the two-request rule is unaffected.
+
+`address` on the person is `addressLocality` / `addressCountry` only, and that is deliberate.
+The full registered office - 71-75 Shelton Street, from Companies House - sits on the Moloqo
+entry in `worksFor` instead, where it is unambiguously true. It was briefly on the person, which
+was wrong twice over: `Person.address` asserts where *he* lives, and that postcode is a shared
+registered-office service used by a great many companies, so it disambiguates nothing. London and
+GB are the parts that carry signal. Any `worksFor` entry may carry an `address`; it is emitted
+only when present. Don't add a residential address to either.
 
 Two of those are easy to get wrong. `sameAs` is only for alternate representations of Charlie
 himself — LinkedIn, X, GitHub. Organisations he is affiliated with are a different claim and go
@@ -106,7 +121,12 @@ HTML fragments and Markdown alike. Same-site and relative links are left alone, 
 that already declares a target. Don't add the attributes by hand.
 
 **Company logos are stored locally** in `static/logos/`, fetched once rather than hotlinked, so
-the zero-external-requests rule still holds on the career page. Organisations with no logo get a
+the zero-external-requests rule still holds on the career page. **Store them at 52x52** - twice
+the 26px display size, and no more. They are inlined as base64 by `inlineLogos()`, which puts
+them in the render-blocking document itself, so an oversized source is paid for on every load of
+the page: at 128x128 they made `career/index.html` 63KB gzipped against 1.3KB for the home page.
+Downscaling and quantising them took it to 14KB with no visible difference at 26px. The recipe:
+`magick <f> -resize '52x52>' -strip -dither FloydSteinberg -colors 128 PNG8:<f>`. Organisations with no logo get a
 CSS monogram circle instead; don't add a remote `<img>` src to fill a gap.
 
 **Styling is one ~2.6KB file** at `static/style.css`, linked root-relative. Tokens are custom
@@ -146,6 +166,16 @@ looks missing on a page, that is browser cache.
 **The home page carries only his name and the index — no tagline, no intro line.** Its content
 source is `pages/index.html`, which is intentionally empty. He flagged this as a state he may
 want to return to, so if he later asks for text there, don't lose the empty version.
+
+Because it has no body copy, two things are done differently there, both invisible on the page.
+Its `<title>` is `Charlie Cheesman — AI deployment strategist` rather than the bare name, since
+the title tag is not rendered and it is the only place the home page says what he does. And the
+name in the index is emitted as `<h1>` there via `shell()`'s `nameHeading` flag, so the page is
+not the one page on the site with no heading at all; `.name` pins font-size and weight, so the
+`<h1>` and the `<p>` used everywhere else are indistinguishable. He asked for a hidden block of
+text instead - **don't add one.** Visually hidden keyword text is against Google's spam policies
+and would put the site at risk rather than help it. These two changes get the same benefit
+honestly.
 
 ## Content status
 
