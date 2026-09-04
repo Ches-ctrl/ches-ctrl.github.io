@@ -1,56 +1,172 @@
-<!DOCTYPE html>
+<!-- GENERATED FILE - DO NOT EDIT.
+     Your changes here are overwritten by the next `npm run build`.
+     Edit the source instead: pages/bookshelf.html -->
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bookshelf — Charlie Cheesman</title>
-  <script src="../config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['Fraunces', 'Georgia', 'serif'],
-            sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
-            mono: ['IBM Plex Mono', 'monospace'],
-          },
-          colors: { accent: '#06b6d4', 'accent-dim': '#0891b2' },
-        },
-      },
-    };
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    body { visibility: hidden; }
-    .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
-    .prose a:hover { border-bottom-color: #06b6d4; }
-    .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bookshelf · Charlie Cheesman</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="alternate" type="application/atom+xml" title="Charlie Cheesman" href="/feed.xml">
 </head>
-<body class="bg-[#fafaf9] text-neutral-900 font-sans antialiased min-h-screen flex flex-col text-sm">
-  <div class="max-w-2xl pl-12 pr-6 pt-10 pb-16 sm:pt-14 flex-1 flex flex-col">
-    <header class="mb-4">
-      <div class="accent-line w-16 mb-6"></div>
-      <p class="text-neutral-500 text-sm mb-2"><a href="../" class="text-accent hover:underline">← Home</a></p>
-    </header>
+<body>
+<div class="page">
+  <aside>
+    <div class="accent"></div>
+    <p class="name"><a href="/">Charlie Cheesman</a></p>
+    <nav>
+      <a href="/about/">About</a>
+      <a href="/work/">Work</a>
+      <a href="/career/">Career</a>
+      <a href="/blog/">Blog</a>
+      <a href="/ideas/">Ideas</a>
+      <a href="/questions/">Questions</a>
+      <a href="/bookshelf/" class="current">Bookshelf</a>
+      <a href="/tech-stack/">Tech stack</a>
+      <a href="/links/">Links</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </aside>
+  <main>
+<h1>Bookshelf</h1>
 
-    <main>
-      <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Bookshelf</h2>
-      <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
-        <ul class="list-none space-y-2">
-          <li><em>Book Title</em> — Author</li>
-          <li><em>Another Book</em> — Author</li>
-        </ul>
-      </div>
-    </main>
+<p>An incomplete list of books I've loved and would recommend, inspired by Patrick Collison's
+<a href="https://patrickcollison.com/bookshelf" target="_blank" rel="noopener">list of the same</a>.</p>
 
-    <footer class="mt-auto pt-8 border-t border-neutral-200 text-neutral-500 text-sm">
-      <p>© <span id="year"></span></p>
-    </footer>
-  </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear(); document.fonts.ready.then(function () { requestAnimationFrame(function () { document.body.style.visibility = 'visible'; }); });</script>
+<h2>Founders and companies</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=The+Accidental+Billionaires+Ben+Mezrich&amp;i=stripbooks" target="_blank" rel="noopener">The Accidental Billionaires</a> - Ben Mezrich</li>
+  <li><a href="https://www.amazon.com/s?k=Alibaba+Duncan+Clark&amp;i=stripbooks" target="_blank" rel="noopener">Alibaba</a> - Duncan Clark</li>
+  <li><a href="https://www.amazon.com/s?k=Becoming+Trader+Joe+Joe+Coulombe&amp;i=stripbooks" target="_blank" rel="noopener">Becoming Trader Joe</a> - Joe Coulombe</li>
+  <li><a href="https://www.amazon.com/s?k=Billion+Dollar+Loser+Reeves+Wiedeman&amp;i=stripbooks" target="_blank" rel="noopener">Billion Dollar Loser</a> - Reeves Wiedeman</li>
+  <li><a href="https://www.amazon.com/s?k=Careless+People+Sarah+Wynn-Williams&amp;i=stripbooks" target="_blank" rel="noopener">Careless People</a> - Sarah Wynn-Williams</li>
+  <li><a href="https://www.amazon.com/s?k=The+Cobbler&amp;i=stripbooks" target="_blank" rel="noopener">The Cobbler</a></li>
+  <li><a href="https://www.amazon.com/s?k=Elon+Musk+Walter+Isaacson&amp;i=stripbooks" target="_blank" rel="noopener">Elon Musk</a> - Walter Isaacson</li>
+  <li><a href="https://www.amazon.com/s?k=The+Everything+Store+Brad+Stone&amp;i=stripbooks" target="_blank" rel="noopener">The Everything Store</a> - Brad Stone</li>
+  <li><a href="https://www.amazon.com/s?k=Facebook%3A+The+Inside+Story+Steven+Levy&amp;i=stripbooks" target="_blank" rel="noopener">Facebook: The Inside Story</a> - Steven Levy</li>
+  <li><a href="https://www.amazon.com/s?k=The+Founders+Jimmy+Soni&amp;i=stripbooks" target="_blank" rel="noopener">The Founders</a> - Jimmy Soni</li>
+  <li><a href="https://www.amazon.com/s?k=Grinding+It+Out+Ray+Kroc&amp;i=stripbooks" target="_blank" rel="noopener">Grinding It Out</a> - Ray Kroc</li>
+  <li><a href="https://www.amazon.com/s?k=How+Google+Works+Eric+Schmidt+%26+Jonathan+Rosenberg&amp;i=stripbooks" target="_blank" rel="noopener">How Google Works</a> - Eric Schmidt &amp; Jonathan Rosenberg</li>
+  <li><a href="https://www.amazon.com/s?k=Idea+Man+Paul+Allen&amp;i=stripbooks" target="_blank" rel="noopener">Idea Man</a> - Paul Allen</li>
+  <li><a href="https://www.amazon.com/s?k=In+The+Plex+Steven+Levy&amp;i=stripbooks" target="_blank" rel="noopener">In The Plex</a> - Steven Levy</li>
+  <li><a href="https://www.amazon.com/s?k=Insanely+Simple+Ken+Segall&amp;i=stripbooks" target="_blank" rel="noopener">Insanely Simple</a> - Ken Segall</li>
+  <li><a href="https://www.amazon.com/s?k=The+Inside+Story+of+PayPal&amp;i=stripbooks" target="_blank" rel="noopener">The Inside Story of PayPal</a></li>
+  <li><a href="https://www.amazon.com/s?k=Invention+James+Dyson&amp;i=stripbooks" target="_blank" rel="noopener">Invention</a> - James Dyson</li>
+  <li><a href="https://www.amazon.com/s?k=Jony+Ive+Leander+Kahney&amp;i=stripbooks" target="_blank" rel="noopener">Jony Ive</a> - Leander Kahney</li>
+  <li><a href="https://www.amazon.com/s?k=Let+My+People+Go+Surfing+Yvon+Chouinard&amp;i=stripbooks" target="_blank" rel="noopener">Let My People Go Surfing</a> - Yvon Chouinard</li>
+  <li><a href="https://www.amazon.com/s?k=Losing+My+Virginity+Richard+Branson&amp;i=stripbooks" target="_blank" rel="noopener">Losing My Virginity</a> - Richard Branson</li>
+  <li><a href="https://www.amazon.com/s?k=Lululemon&amp;i=stripbooks" target="_blank" rel="noopener">Lululemon</a></li>
+  <li><a href="https://www.amazon.com/s?k=Michael+O%27Leary&amp;i=stripbooks" target="_blank" rel="noopener">Michael O&#x27;Leary</a></li>
+  <li><a href="https://www.amazon.com/s?k=No+Filter+Sarah+Frier&amp;i=stripbooks" target="_blank" rel="noopener">No Filter</a> - Sarah Frier</li>
+  <li><a href="https://www.amazon.com/s?k=No+Rules+Rules+Reed+Hastings+%26+Erin+Meyer&amp;i=stripbooks" target="_blank" rel="noopener">No Rules Rules</a> - Reed Hastings &amp; Erin Meyer</li>
+  <li><a href="https://www.amazon.com/s?k=Pour+Your+Heart+Into+It+Howard+Schultz&amp;i=stripbooks" target="_blank" rel="noopener">Pour Your Heart Into It</a> - Howard Schultz</li>
+  <li><a href="https://www.amazon.com/s?k=Shoe+Dog+Phil+Knight&amp;i=stripbooks" target="_blank" rel="noopener">Shoe Dog</a> - Phil Knight</li>
+  <li><a href="https://www.amazon.com/s?k=Shoemaker+Joe+Foster&amp;i=stripbooks" target="_blank" rel="noopener">Shoemaker</a> - Joe Foster</li>
+  <li><a href="https://www.amazon.com/s?k=Steve+Jobs%3A+The+Exclusive+Biography+Walter+Isaacson&amp;i=stripbooks" target="_blank" rel="noopener">Steve Jobs: The Exclusive Biography</a> - Walter Isaacson</li>
+  <li><a href="https://www.amazon.com/s?k=Super+Pumped+Mike+Isaac&amp;i=stripbooks" target="_blank" rel="noopener">Super Pumped</a> - Mike Isaac</li>
+  <li><a href="https://www.amazon.com/s?k=Supremacy+Parmy+Olson&amp;i=stripbooks" target="_blank" rel="noopener">Supremacy</a> - Parmy Olson</li>
+  <li><a href="https://www.amazon.com/s?k=That+Will+Never+Work+Marc+Randolph&amp;i=stripbooks" target="_blank" rel="noopener">That Will Never Work</a> - Marc Randolph</li>
+  <li><a href="https://www.amazon.com/s?k=The+Thinking+Machine+Stephen+Witt&amp;i=stripbooks" target="_blank" rel="noopener">The Thinking Machine</a> - Stephen Witt</li>
+  <li><a href="https://www.amazon.com/s?k=Unreasonable+Hospitality+Will+Guidara&amp;i=stripbooks" target="_blank" rel="noopener">Unreasonable Hospitality</a> - Will Guidara</li>
+  <li><a href="https://www.amazon.com/s?k=Who+Is+Michael+Ovitz%3F+Michael+Ovitz&amp;i=stripbooks" target="_blank" rel="noopener">Who Is Michael Ovitz?</a> - Michael Ovitz</li>
+</ul>
+
+<h2>Startups and building</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=The+Almanack+of+Naval+Ravikant+Eric+Jorgenson&amp;i=stripbooks" target="_blank" rel="noopener">The Almanack of Naval Ravikant</a> - Eric Jorgenson</li>
+  <li><a href="https://www.amazon.com/s?k=Blitzscaling+Reid+Hoffman&amp;i=stripbooks" target="_blank" rel="noopener">Blitzscaling</a> - Reid Hoffman</li>
+  <li><a href="https://www.amazon.com/s?k=The+Cold+Start+Problem+Andrew+Chen&amp;i=stripbooks" target="_blank" rel="noopener">The Cold Start Problem</a> - Andrew Chen</li>
+  <li><a href="https://www.amazon.com/s?k=Crossing+the+Chasm+Geoffrey+Moore&amp;i=stripbooks" target="_blank" rel="noopener">Crossing the Chasm</a> - Geoffrey Moore</li>
+  <li><a href="https://www.amazon.com/s?k=The+Founder%27s+Dilemmas+Noam+Wasserman&amp;i=stripbooks" target="_blank" rel="noopener">The Founder&#x27;s Dilemmas</a> - Noam Wasserman</li>
+  <li><a href="https://www.amazon.com/s?k=The+Hard+Thing+About+Hard+Things+Ben+Horowitz&amp;i=stripbooks" target="_blank" rel="noopener">The Hard Thing About Hard Things</a> - Ben Horowitz</li>
+  <li><a href="https://www.amazon.com/s?k=The+Lean+Startup+Eric+Ries&amp;i=stripbooks" target="_blank" rel="noopener">The Lean Startup</a> - Eric Ries</li>
+  <li><a href="https://www.amazon.com/s?k=The+Mom+Test+Rob+Fitzpatrick&amp;i=stripbooks" target="_blank" rel="noopener">The Mom Test</a> - Rob Fitzpatrick</li>
+  <li><a href="https://www.amazon.com/s?k=Rework+Jason+Fried+%26+David+Heinemeier+Hansson&amp;i=stripbooks" target="_blank" rel="noopener">Rework</a> - Jason Fried &amp; David Heinemeier Hansson</li>
+  <li><a href="https://www.amazon.com/s?k=Shape+Up+Ryan+Singer&amp;i=stripbooks" target="_blank" rel="noopener">Shape Up</a> - Ryan Singer</li>
+  <li><a href="https://www.amazon.com/s?k=Speed+%26+Scale+John+Doerr&amp;i=stripbooks" target="_blank" rel="noopener">Speed &amp; Scale</a> - John Doerr</li>
+  <li><a href="https://www.amazon.com/s?k=The+Startup+Owner%27s+Manual+Steve+Blank+%26+Bob+Dorf&amp;i=stripbooks" target="_blank" rel="noopener">The Startup Owner&#x27;s Manual</a> - Steve Blank &amp; Bob Dorf</li>
+  <li><a href="https://www.amazon.com/s?k=Zero+to+One+Peter+Thiel&amp;i=stripbooks" target="_blank" rel="noopener">Zero to One</a> - Peter Thiel</li>
+</ul>
+
+<h2>Sales, growth and persuasion</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=%24100M+Leads+Alex+Hormozi&amp;i=stripbooks" target="_blank" rel="noopener">$100M Leads</a> - Alex Hormozi</li>
+  <li><a href="https://www.amazon.com/s?k=Alchemy+Rory+Sutherland&amp;i=stripbooks" target="_blank" rel="noopener">Alchemy</a> - Rory Sutherland</li>
+  <li><a href="https://www.amazon.com/s?k=The+Challenger+Sale+Matthew+Dixon+%26+Brent+Adamson&amp;i=stripbooks" target="_blank" rel="noopener">The Challenger Sale</a> - Matthew Dixon &amp; Brent Adamson</li>
+  <li><a href="https://www.amazon.com/s?k=Fanatical+Prospecting+Jeb+Blount&amp;i=stripbooks" target="_blank" rel="noopener">Fanatical Prospecting</a> - Jeb Blount</li>
+  <li><a href="https://www.amazon.com/s?k=Hacking+Growth+Sean+Ellis+%26+Morgan+Brown&amp;i=stripbooks" target="_blank" rel="noopener">Hacking Growth</a> - Sean Ellis &amp; Morgan Brown</li>
+  <li><a href="https://www.amazon.com/s?k=Influence+Robert+Cialdini&amp;i=stripbooks" target="_blank" rel="noopener">Influence</a> - Robert Cialdini</li>
+  <li><a href="https://www.amazon.com/s?k=Never+Split+The+Difference+Chris+Voss&amp;i=stripbooks" target="_blank" rel="noopener">Never Split The Difference</a> - Chris Voss</li>
+</ul>
+
+<h2>Software and engineering</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=AI+Engineering+Chip+Huyen&amp;i=stripbooks" target="_blank" rel="noopener">AI Engineering</a> - Chip Huyen</li>
+  <li><a href="https://www.amazon.com/s?k=Clean+Architecture+Robert+C.+Martin&amp;i=stripbooks" target="_blank" rel="noopener">Clean Architecture</a> - Robert C. Martin</li>
+  <li><a href="https://www.amazon.com/s?k=Clean+Code+Robert+C.+Martin&amp;i=stripbooks" target="_blank" rel="noopener">Clean Code</a> - Robert C. Martin</li>
+  <li><a href="https://www.amazon.com/s?k=Metaprogramming+Ruby+Paolo+Perrotta&amp;i=stripbooks" target="_blank" rel="noopener">Metaprogramming Ruby</a> - Paolo Perrotta</li>
+  <li><a href="https://www.amazon.com/s?k=Operating+Systems%3A+Three+Easy+Pieces+Remzi+%26+Andrea+Arpaci-Dusseau&amp;i=stripbooks" target="_blank" rel="noopener">Operating Systems: Three Easy Pieces</a> - Remzi &amp; Andrea Arpaci-Dusseau</li>
+  <li><a href="https://www.amazon.com/s?k=The+Pattern+on+the+Stone+W.+Daniel+Hillis&amp;i=stripbooks" target="_blank" rel="noopener">The Pattern on the Stone</a> - W. Daniel Hillis</li>
+  <li><a href="https://www.amazon.com/s?k=The+Phoenix+Project+Gene+Kim%2C+Kevin+Behr+%26+George+Spafford&amp;i=stripbooks" target="_blank" rel="noopener">The Phoenix Project</a> - Gene Kim, Kevin Behr &amp; George Spafford</li>
+  <li><a href="https://www.amazon.com/s?k=Refactoring+Martin+Fowler&amp;i=stripbooks" target="_blank" rel="noopener">Refactoring</a> - Martin Fowler</li>
+  <li><a href="https://www.amazon.com/s?k=Sustainable+Rails+David+Bryant+Copeland&amp;i=stripbooks" target="_blank" rel="noopener">Sustainable Rails</a> - David Bryant Copeland</li>
+  <li><a href="https://www.amazon.com/s?k=Sustainable+Web+Development+with+Ruby+on+Rails+David+Bryant+Copeland&amp;i=stripbooks" target="_blank" rel="noopener">Sustainable Web Development with Ruby on Rails</a> - David Bryant Copeland</li>
+</ul>
+
+<h2>Design</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=The+Design+of+Everyday+Things+Don+Norman&amp;i=stripbooks" target="_blank" rel="noopener">The Design of Everyday Things</a> - Don Norman</li>
+  <li><a href="https://www.amazon.com/s?k=User+Friendly+Cliff+Kuang+%26+Robert+Fabricant&amp;i=stripbooks" target="_blank" rel="noopener">User Friendly</a> - Cliff Kuang &amp; Robert Fabricant</li>
+</ul>
+
+<h2>Narrative non-fiction and memoir</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=American+Kingpin+Nick+Bilton&amp;i=stripbooks" target="_blank" rel="noopener">American Kingpin</a> - Nick Bilton</li>
+  <li><a href="https://www.amazon.com/s?k=And+Away...+Bob+Mortimer&amp;i=stripbooks" target="_blank" rel="noopener">And Away...</a> - Bob Mortimer</li>
+  <li><a href="https://www.amazon.com/s?k=Going+Infinite+Michael+Lewis&amp;i=stripbooks" target="_blank" rel="noopener">Going Infinite</a> - Michael Lewis</li>
+  <li><a href="https://www.amazon.com/s?k=Greenlights+Matthew+McConaughey&amp;i=stripbooks" target="_blank" rel="noopener">Greenlights</a> - Matthew McConaughey</li>
+  <li><a href="https://www.amazon.com/s?k=How+To+Lose+Friends+And+Alienate+People+Toby+Young&amp;i=stripbooks" target="_blank" rel="noopener">How To Lose Friends And Alienate People</a> - Toby Young</li>
+  <li><a href="https://www.amazon.com/s?k=Levels+of+the+Game+John+McPhee&amp;i=stripbooks" target="_blank" rel="noopener">Levels of the Game</a> - John McPhee</li>
+  <li><a href="https://www.amazon.com/s?k=The+Lunch+That+Killed+a+Critic&amp;i=stripbooks" target="_blank" rel="noopener">The Lunch That Killed a Critic</a></li>
+  <li><a href="https://www.amazon.com/s?k=The+Man+Who+Solved+The+Market+Gregory+Zuckerman&amp;i=stripbooks" target="_blank" rel="noopener">The Man Who Solved The Market</a> - Gregory Zuckerman</li>
+  <li><a href="https://www.amazon.com/s?k=Reentry+Eric+Berger&amp;i=stripbooks" target="_blank" rel="noopener">Reentry</a> - Eric Berger</li>
+  <li><a href="https://www.amazon.com/s?k=This+Is+Going+To+Hurt+Adam+Kay&amp;i=stripbooks" target="_blank" rel="noopener">This Is Going To Hurt</a> - Adam Kay</li>
+  <li><a href="https://www.amazon.com/s?k=Very+Important+People+Ashley+Mears&amp;i=stripbooks" target="_blank" rel="noopener">Very Important People</a> - Ashley Mears</li>
+  <li><a href="https://www.amazon.com/s?k=When+The+Heavens+Went+On+Sale+Ashlee+Vance&amp;i=stripbooks" target="_blank" rel="noopener">When The Heavens Went On Sale</a> - Ashlee Vance</li>
+</ul>
+
+<h2>Thinking, habits and health</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=Advanced+Memory+Palaces&amp;i=stripbooks" target="_blank" rel="noopener">Advanced Memory Palaces</a></li>
+  <li><a href="https://www.amazon.com/s?k=Atomic+Habits+James+Clear&amp;i=stripbooks" target="_blank" rel="noopener">Atomic Habits</a> - James Clear</li>
+  <li><a href="https://www.amazon.com/s?k=Fluke+Brian+Klaas&amp;i=stripbooks" target="_blank" rel="noopener">Fluke</a> - Brian Klaas</li>
+  <li><a href="https://www.amazon.com/s?k=Four+Thousand+Weeks+Oliver+Burkeman&amp;i=stripbooks" target="_blank" rel="noopener">Four Thousand Weeks</a> - Oliver Burkeman</li>
+  <li><a href="https://www.amazon.com/s?k=How+Not+To+Die+Michael+Greger&amp;i=stripbooks" target="_blank" rel="noopener">How Not To Die</a> - Michael Greger</li>
+  <li><a href="https://www.amazon.com/s?k=How+To+Take+Smart+Notes+Sonke+Ahrens&amp;i=stripbooks" target="_blank" rel="noopener">How To Take Smart Notes</a> - Sonke Ahrens</li>
+  <li><a href="https://www.amazon.com/s?k=The+Let+Them+Theory+Mel+Robbins&amp;i=stripbooks" target="_blank" rel="noopener">The Let Them Theory</a> - Mel Robbins</li>
+  <li><a href="https://www.amazon.com/s?k=Lightoff&amp;i=stripbooks" target="_blank" rel="noopener">Lightoff</a></li>
+  <li><a href="https://www.amazon.com/s?k=Outlive+Peter+Attia&amp;i=stripbooks" target="_blank" rel="noopener">Outlive</a> - Peter Attia</li>
+  <li><a href="https://www.amazon.com/s?k=Why+Has+Nobody+Told+Me+This+Before%3F+Julie+Smith&amp;i=stripbooks" target="_blank" rel="noopener">Why Has Nobody Told Me This Before?</a> - Julie Smith</li>
+</ul>
+
+<h2>Fiction</h2>
+<ul>
+  <li><a href="https://www.amazon.com/s?k=The+Adventures+of+Sherlock+Holmes+Arthur+Conan+Doyle&amp;i=stripbooks" target="_blank" rel="noopener">The Adventures of Sherlock Holmes</a> - Arthur Conan Doyle</li>
+  <li><a href="https://www.amazon.com/s?k=Dune+Frank+Herbert&amp;i=stripbooks" target="_blank" rel="noopener">Dune</a> - Frank Herbert</li>
+  <li><a href="https://www.amazon.com/s?k=A+Good+Year+Peter+Mayle&amp;i=stripbooks" target="_blank" rel="noopener">A Good Year</a> - Peter Mayle</li>
+  <li><a href="https://www.amazon.com/s?k=Harry+Potter+and+the+Methods+of+Rationality+Eliezer+Yudkowsky&amp;i=stripbooks" target="_blank" rel="noopener">Harry Potter and the Methods of Rationality</a> - Eliezer Yudkowsky</li>
+  <li><a href="https://www.amazon.com/s?k=The+Hitchhiker%27s+Guide+to+the+Galaxy+Douglas+Adams&amp;i=stripbooks" target="_blank" rel="noopener">The Hitchhiker&#x27;s Guide to the Galaxy</a> - Douglas Adams</li>
+  <li><a href="https://www.amazon.com/s?k=The+Lord+of+the+Rings+J.R.R.+Tolkien&amp;i=stripbooks" target="_blank" rel="noopener">The Lord of the Rings</a> - J.R.R. Tolkien</li>
+  <li><a href="https://www.amazon.com/s?k=The+Lords+of+the+North+Bernard+Cornwell&amp;i=stripbooks" target="_blank" rel="noopener">The Lords of the North</a> - Bernard Cornwell</li>
+  <li><a href="https://www.amazon.com/s?k=The+Memoirs+of+Sherlock+Holmes+Arthur+Conan+Doyle&amp;i=stripbooks" target="_blank" rel="noopener">The Memoirs of Sherlock Holmes</a> - Arthur Conan Doyle</li>
+  <li><a href="https://www.amazon.com/s?k=The+Murder+of+Roger+Ackroyd+Agatha+Christie&amp;i=stripbooks" target="_blank" rel="noopener">The Murder of Roger Ackroyd</a> - Agatha Christie</li>
+  <li><a href="https://www.amazon.com/s?k=Sherlock+Holmes+Arthur+Conan+Doyle&amp;i=stripbooks" target="_blank" rel="noopener">Sherlock Holmes</a> - Arthur Conan Doyle</li>
+  <li><a href="https://www.amazon.com/s?k=The+Sign+of+Four+Arthur+Conan+Doyle&amp;i=stripbooks" target="_blank" rel="noopener">The Sign of Four</a> - Arthur Conan Doyle</li>
+  <li><a href="https://www.amazon.com/s?k=A+Study+in+Scarlet+Arthur+Conan+Doyle&amp;i=stripbooks" target="_blank" rel="noopener">A Study in Scarlet</a> - Arthur Conan Doyle</li>
+  <li><a href="https://www.amazon.com/s?k=The+Thursday+Murder+Club+Richard+Osman&amp;i=stripbooks" target="_blank" rel="noopener">The Thursday Murder Club</a> - Richard Osman</li>
+</ul>
+  </main>
+</div>
 </body>
 </html>

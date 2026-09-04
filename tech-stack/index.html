@@ -1,53 +1,64 @@
-<!DOCTYPE html>
+<!-- GENERATED FILE - DO NOT EDIT.
+     Your changes here are overwritten by the next `npm run build`.
+     Edit the source instead: pages/tech-stack.html -->
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tech Stack — Charlie Cheesman</title>
-  <script src="../config.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['Fraunces', 'Georgia', 'serif'],
-            sans: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
-            mono: ['IBM Plex Mono', 'monospace'],
-          },
-          colors: { accent: '#06b6d4', 'accent-dim': '#0891b2' },
-        },
-      },
-    };
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    body { visibility: hidden; }
-    .prose a { color: #06b6d4; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
-    .prose a:hover { border-bottom-color: #06b6d4; }
-    .accent-line { height: 2px; background: linear-gradient(90deg, #06b6d4 0%, transparent 100%); opacity: 0.8; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tech stack · Charlie Cheesman</title>
+<link rel="stylesheet" href="/static/style.css">
+<link rel="alternate" type="application/atom+xml" title="Charlie Cheesman" href="/feed.xml">
 </head>
-<body class="bg-[#fafaf9] text-neutral-900 font-sans antialiased min-h-screen flex flex-col text-sm">
-  <div class="max-w-2xl pl-12 pr-6 pt-10 pb-16 sm:pt-14 flex-1 flex flex-col">
-    <header class="mb-4">
-      <div class="accent-line w-16 mb-6"></div>
-      <p class="text-neutral-500 text-sm mb-2"><a href="../" class="text-accent hover:underline">← Home</a></p>
-    </header>
+<body>
+<div class="page">
+  <aside>
+    <div class="accent"></div>
+    <p class="name"><a href="/">Charlie Cheesman</a></p>
+    <nav>
+      <a href="/about/">About</a>
+      <a href="/work/">Work</a>
+      <a href="/career/">Career</a>
+      <a href="/blog/">Blog</a>
+      <a href="/ideas/">Ideas</a>
+      <a href="/questions/">Questions</a>
+      <a href="/bookshelf/">Bookshelf</a>
+      <a href="/tech-stack/" class="current">Tech stack</a>
+      <a href="/links/">Links</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+  </aside>
+  <main>
+<h1>Tech stack</h1>
 
-    <main>
-      <h2 class="font-display text-xl font-semibold text-neutral-900 mb-4">Tech Stack</h2>
-      <div class="prose prose-neutral max-w-none text-neutral-700 leading-relaxed">
-        <p>Languages, tools, and environments you use. Keep it minimal.</p>
-      </div>
-    </main>
+<p class="lede">My favourite tooling.</p>
 
-    <footer class="mt-auto pt-8 border-t border-neutral-200 text-neutral-500 text-sm">
-      <p>© <span id="year"></span></p>
-    </footer>
-  </div>
-  <script>document.getElementById('year').textContent = new Date().getFullYear(); document.fonts.ready.then(function () { requestAnimationFrame(function () { document.body.style.visibility = 'visible'; }); });</script>
+<h2>Work</h2>
+
+<ul>
+  <li><a href="https://linear.app" target="_blank" rel="noopener">Linear</a></li>
+  <li><a href="https://cursor.com" target="_blank" rel="noopener">Cursor</a></li>
+  <li><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a></li>
+  <li><a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a></li>
+  <li><a href="https://circleback.ai" target="_blank" rel="noopener">Circleback</a></li>
+  <li><a href="https://www.notion.so" target="_blank" rel="noopener">Notion</a></li>
+  <li><a href="https://www.folk.app" target="_blank" rel="noopener">Folk</a></li>
+  <li><a href="https://www.getstanley.ai" target="_blank" rel="noopener">Stanley</a></li>
+  <li><a href="https://wisprflow.ai" target="_blank" rel="noopener">Wispr Flow</a></li>
+  <li><a href="https://timingapp.com" target="_blank" rel="noopener">Timing</a></li>
+</ul>
+
+<h2>Personal</h2>
+
+<ul>
+  <li><a href="https://todoist.com" target="_blank" rel="noopener">Todoist</a></li>
+  <li><a href="https://obsidian.md" target="_blank" rel="noopener">Obsidian</a></li>
+  <li><a href="https://www.elevenreader.io" target="_blank" rel="noopener">ElevenReader</a></li>
+  <li><a href="https://www.shazam.com" target="_blank" rel="noopener">Shazam</a></li>
+  <li><a href="https://insighttimer.com" target="_blank" rel="noopener">Insight Timer</a></li>
+  <li><a href="https://www.hevyapp.com" target="_blank" rel="noopener">Hevy</a></li>
+</ul>
+  </main>
+</div>
 </body>
 </html>

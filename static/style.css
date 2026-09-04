@@ -1,0 +1,203 @@
+/* charliecheesman.net — one stylesheet, no webfonts, no framework.
+   Type and spacing are Patrick Collison's exact values (patrickcollison.com/static/style.css),
+   with the index moved to the left. See CLAUDE.md before changing any of it. */
+
+:root {
+  --link: #0864c7;
+  --accent: #06b6d4;
+  --sidebar: 150px;
+  --gap: 50px;
+  --measure: 500px;
+  /* his menu + heading stack; Myriad Pro falls back for nearly everyone */
+  --display: "Myriad Pro", "Helvetica Neue", Helvetica;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  padding: 30px 20px 80px;
+  background: #fff;
+  font-family: Helvetica;
+  font-size: 13px;
+}
+
+/* Left-aligned: vertical index, then content. */
+.page {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
+}
+
+/* ---- vertical index (his #menu, moved left) ---- */
+
+aside {
+  width: var(--sidebar);
+  flex: 0 0 var(--sidebar);
+  font-family: var(--display);
+}
+
+.accent {
+  height: 2px;
+  width: 64px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+}
+
+.name { margin: 0 0 10px; }
+.name a { color: #000; text-decoration: none; }
+
+nav { display: flex; flex-direction: column; }
+
+/* underlined, as his are — browser default, not overridden */
+nav a { color: var(--link); }
+nav a.current { color: #000; }
+
+/* ---- content (his #content) ---- */
+
+
+
+main {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: var(--measure);
+  margin-top: 15px;
+}
+
+main h1, main h2, main h3 {
+  font-family: var(--display);
+  margin: 0;
+}
+
+/* He sets no heading sizes, but titles with h2 — so his largest heading lands on
+   the browser default 1.5em. Page titles here are h1, which would default to 2em
+   and overshoot anything on his site. Sizes declared to match his rendered scale. */
+main h1 { font-size: 1.5em; }
+main h2 { font-size: 1.17em; margin-top: 2em; margin-bottom: 0.75em; }
+main h3 { font-size: 1em; margin-top: 1.5em; }
+
+main p, main ul, main ol {
+  color: #333;
+  line-height: 18px;
+}
+
+/* :visited pinned to the same blue on purpose — his rule. Not an oversight:
+   without it the browser would default visited links to purple. */
+main a, main a:visited { color: var(--link); }
+
+main li { margin-bottom: 0.7em; }
+
+.byline, .byline a { font-size: 10px; color: #aaa; }
+
+.more { margin-top: 2em; }
+
+.lede { color: #777; }
+
+hr { border: 0; border-top: 1px solid #eee; margin: 2em 0; }
+
+code { font-family: Menlo, Monaco, monospace; font-size: 11px; }
+
+pre {
+  background: #f7f7f7;
+  padding: 10px 12px;
+  overflow-x: auto;
+  line-height: 16px;
+}
+
+blockquote { margin: 1em 0 1em 20px; color: #777; }
+
+img { max-width: 100%; height: auto; }
+
+/* ---- career timeline ---- */
+/* Date column, vertical rule, then the entry. Logo sits with the title. */
+
+.timeline { margin-top: 1.5em; }
+
+.timeline .entry {
+  display: flex;
+  gap: 18px;
+  padding-bottom: 1.7em;
+}
+
+.timeline .when {
+  flex: 0 0 62px;
+  color: #aaa;
+  font-size: 10px;
+  line-height: 15px;
+  text-align: right;
+  padding-top: 4px;
+}
+
+.timeline .what {
+  flex: 1 1 auto;
+  min-width: 0;
+  border-left: 1px solid #e5e5e5;
+  padding-left: 18px;
+}
+
+.timeline .head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.timeline .logo {
+  flex: 0 0 26px;
+  display: block;
+  line-height: 0;
+  padding-top: 1px;
+}
+
+.timeline .logo img,
+.timeline .monogram {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: block;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+}
+
+.timeline .monogram {
+  color: #999;
+  font-size: 10px;
+  line-height: 24px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.timeline h3 { margin: 0 0 0.15em; }
+.timeline .where { color: #aaa; font-size: 10px; margin: 0; }
+
+/* several roles at one organisation */
+.timeline .roles { margin: 0.7em 0 0 36px; padding: 0; list-style: none; }
+.timeline .roles li { margin-bottom: 0.45em; }
+.timeline .roles li:last-child { margin-bottom: 0; }
+.timeline .roles .title { font-weight: bold; }
+
+/* ---- lists of things (blog index, links, bookshelf) ---- */
+
+.entries { list-style-type: none; margin: 1.2em 0 0; padding: 0; }
+.entries li { margin-bottom: 0.7em; }
+.entries .meta { display: block; font-size: 10px; color: #aaa; }
+
+/* description on its own line, at reading size - narrow column makes
+   "title - description" on one line hard to scan */
+.entries .desc { display: block; color: #333; }
+.entries li:has(.desc) { margin-bottom: 1.1em; }
+
+/* ---- narrow screens: index stacks above content ---- */
+
+@media (max-width: 640px) {
+  body { padding: 24px 18px 48px; }
+  .page { display: block; }
+  aside { width: auto; margin-bottom: 24px; }
+  nav { flex-direction: row; flex-wrap: wrap; gap: 0 14px; }
+  main { margin-top: 0; }
+  .timeline .entry { display: block; }
+  .timeline .when { text-align: left; margin-bottom: 0.35em; }
+  .timeline .what { border-left: 0; padding-left: 0; }
+}
