@@ -93,11 +93,30 @@ function inlineLogos(html) {
   });
 }
 
+/**
+ * Make every off-site link open in a new tab.
+ *
+ * Applied at build time to page bodies and rendered posts, so it covers links
+ * written in HTML fragments and links written in Markdown alike - there is no
+ * per-link attribute to remember. Same-site and relative links are untouched,
+ * and any link that already declares a target is left as the author wrote it.
+ */
+function externalLinks(html) {
+  const host = new URL(SITE.url).host;
+  return html.replace(/<a ([^>]*href="(https?:\/\/[^"]+)"[^>]*)>/g, (whole, attrs, href) => {
+    if (/\btarget=/.test(attrs)) return whole;
+    let linkHost;
+    try { linkHost = new URL(href).host; } catch { return whole; }
+    if (linkHost === host) return whole;
+    return `<a ${attrs} target="_blank" rel="noopener">`;
+  });
+}
+
 // ---------------------------------------------------------------- pages
 
 function buildPages() {
   // Home
-  write('index.html', shell({ title: SITE.name, currentPath: '/', body: inlineLogos(read('pages/index.html').trimEnd()), source: 'pages/index.html' }));
+  write('index.html', shell({ title: SITE.name, currentPath: '/', body: externalLinks(inlineLogos(read('pages/index.html').trimEnd())), source: 'pages/index.html' }));
 
   // Section pages
   SITE.nav
@@ -109,7 +128,7 @@ function buildPages() {
         shell({
           title: `${n.label} · ${SITE.name}`,
           currentPath: n.path,
-          body: inlineLogos(read(`pages/${n.page}.html`).trimEnd()),
+          body: externalLinks(inlineLogos(read(`pages/${n.page}.html`).trimEnd())),
           source: `pages/${n.page}.html`,
         })
       );
@@ -177,7 +196,7 @@ function buildBlog(posts) {
     const body =
       `<article>\n<h1>${esc(p.title)}</h1>\n` +
       (p.date ? `<p class="byline">${esc(formatDate(p.date))}</p>\n` : '') +
-      p.html +
+      externalLinks(p.html) +
       `</article>\n<p class="more"><a href="/blog/">← All posts</a></p>`;
     write(`blog/${p.slug}/index.html`, shell({ title: `${p.title} · ${SITE.name}`, currentPath: '/blog/', body, source: `blog/posts/${p.slug}.md` }));
   });

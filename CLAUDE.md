@@ -49,6 +49,11 @@ the stale page — this is why it deletes, and why `posts` is on its keep-list.
 the blog index, with autodiscovery declared in every page's `<head>`. Absolute URLs are required
 by the spec, so it reads `SITE.url` - keep that field correct.
 
+**Off-site links open in a new tab automatically.** `externalLinks()` adds
+`target="_blank" rel="noopener"` at build time to page bodies and rendered posts, so it covers
+HTML fragments and Markdown alike. Same-site and relative links are left alone, as is any link
+that already declares a target. Don't add the attributes by hand.
+
 **Company logos are stored locally** in `static/logos/`, fetched once rather than hotlinked, so
 the zero-external-requests rule still holds on the career page. Organisations with no logo get a
 CSS monogram circle instead; don't add a remote `<img>` src to fill a gap.
