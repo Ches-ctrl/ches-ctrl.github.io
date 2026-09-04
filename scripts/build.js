@@ -24,6 +24,17 @@ const esc = (s) =>
 
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
 
+const SITE_URL = SITE.url.replace(/\/$/, '');
+/** Absolute URL for a root-relative path. Required by Open Graph, sitemaps and JSON-LD alike. */
+const abs = (p) => `${SITE_URL}${p}`;
+
+/** Collapse to a single line and clip to a length search engines will actually show. */
+function clip(text, max = 155) {
+  const t = String(text).replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  return t.slice(0, t.lastIndexOf(' ', max - 1)).replace(/[,;:.\-]$/, '') + '…';
+}
+
 function write(relPath, html) {
   const full = path.join(ROOT, relPath);
   fs.mkdirSync(path.dirname(full), { recursive: true });
@@ -32,8 +43,17 @@ function write(relPath, html) {
 
 // ---------------------------------------------------------------- the shell
 
-/** The only place page boilerplate is defined. */
-function shell({ title, currentPath, body, source = 'pages/' }) {
+/**
+ * The only place page boilerplate is defined.
+ *
+ * `currentPath` highlights the nav; `url` is the page's own canonical address -
+ * they differ for blog posts, which live at /blog/<slug>/ but highlight Blog.
+ *
+ * The `jsonLd` block is data, not behaviour: browsers parse it and never execute
+ * it, so the no-JavaScript rule still holds and nothing is added to the critical
+ * path. It is emitted only where it earns its place - the home page and posts.
+ */
+function shell({ title, description, currentPath, url, body, source = 'pages/', ogType = 'website', jsonLd = null, noindex = false }) {
   const nav = SITE.nav
     .map((n) => {
       const current = n.path === currentPath ? ' class="current"' : '';
@@ -42,6 +62,15 @@ function shell({ title, currentPath, body, source = 'pages/' }) {
       return `      <a href="${n.path}"${current}${external}>${esc(n.label)}</a>`;
     })
     .join('\n');
+
+  const desc = clip(description || SITE.description);
+  const canonical = abs(url || currentPath);
+  const ogImage = abs(SITE.image);
+  // Twitter reads og:title/og:description when the twitter:* pair is absent, so
+  // the head below emits only the two tags that have no Open Graph equivalent.
+  const ld = jsonLd
+    ? `\n<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>`
+    : '';
 
   return `<!-- GENERATED FILE - DO NOT EDIT.
      Your changes here are overwritten by the next \`npm run build\`.
@@ -52,8 +81,21 @@ function shell({ title, currentPath, body, source = 'pages/' }) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">${noindex ? '\n<meta name="robots" content="noindex">' : ''}
+<link rel="canonical" href="${canonical}">
+<meta property="og:type" content="${ogType}">
+<meta property="og:site_name" content="${esc(SITE.name)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:url" content="${canonical}">
+<meta property="og:image" content="${ogImage}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(SITE.name)} — ${esc(SITE.jobTitle)}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@charliecheesma1">
 <link rel="stylesheet" href="/static/style.css">
-<link rel="alternate" type="application/atom+xml" title="${esc(SITE.name)}" href="/feed.xml">
+<link rel="alternate" type="application/atom+xml" title="${esc(SITE.name)}" href="/feed.xml">${ld}
 </head>
 <body>
 <div class="page">
@@ -119,9 +161,50 @@ function stripNotes(html) {
 
 // ---------------------------------------------------------------- pages
 
+/**
+ * Schema.org Person for the home page.
+ *
+ * This is the site's one entity claim: it ties the domain to the person, and
+ * `sameAs` is what lets a search engine connect it to the profiles and press
+ * coverage elsewhere. Kept in site.json so the facts live with the rest of them.
+ */
+function personLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: SITE.name,
+    url: abs('/'),
+    image: abs(SITE.image),
+    jobTitle: SITE.jobTitle,
+    description: SITE.description,
+    sameAs: SITE.sameAs,
+  };
+}
+
 function buildPages() {
   // Home
-  write('index.html', shell({ title: SITE.name, currentPath: '/', body: stripNotes(externalLinks(inlineLogos(read('pages/index.html').trimEnd()))), source: 'pages/index.html' }));
+  write('index.html', shell({
+    title: SITE.name,
+    description: SITE.description,
+    currentPath: '/',
+    url: '/',
+    body: stripNotes(externalLinks(inlineLogos(read('pages/index.html').trimEnd()))),
+    source: 'pages/index.html',
+    jsonLd: personLd(),
+  }));
+
+  // 404. GitHub Pages serves this for any unmatched path, with a real 404 status -
+  // but /404.html fetched directly answers 200, so it is marked noindex to keep
+  // the page itself out of the index.
+  write('404.html', shell({
+    title: `Not found · ${SITE.name}`,
+    description: 'That page does not exist.',
+    currentPath: '',
+    url: '/404.html',
+    body: stripNotes(read('pages/404.html').trimEnd()),
+    source: 'pages/404.html',
+    noindex: true,
+  }));
 
   // Section pages
   SITE.nav
@@ -132,17 +215,26 @@ function buildPages() {
         `${dir}/index.html`,
         shell({
           title: `${n.label} · ${SITE.name}`,
+          description: n.description,
           currentPath: n.path,
+          url: n.path,
           body: stripNotes(externalLinks(inlineLogos(read(`pages/${n.page}.html`).trimEnd()))),
           source: `pages/${n.page}.html`,
         })
       );
     });
 
-  return 1 + SITE.nav.filter((n) => n.page).length;
+  return 2 + SITE.nav.filter((n) => n.page).length;
 }
 
 // ---------------------------------------------------------------- blog
+
+/** First paragraph of a rendered post, as plain text - the description fallback. */
+function firstParagraph(html) {
+  const m = html.match(/<p>([\s\S]*?)<\/p>/);
+  if (!m) return '';
+  return m[1].replace(/<[^>]*>/g, '').replace(/&[a-z]+;/g, ' ').trim();
+}
 
 /** Strip surrounding quotes only when they actually pair up. */
 function stripQuotes(v) {
@@ -176,12 +268,16 @@ function readPosts() {
     .filter((f) => f.endsWith('.md'))
     .map((file) => {
       const { data, body } = parseFrontmatter(fs.readFileSync(path.join(dir, file), 'utf8'));
+      const html = marked.parse(body);
       return {
         slug: file.replace(/\.md$/, ''),
         title: data.title || file.replace(/\.md$/, ''),
         date: data.date || null,
         draft: String(data.draft || '').toLowerCase() === 'true',
-        html: marked.parse(body),
+        // `description` in the frontmatter wins; otherwise the opening paragraph,
+        // which is what a reader would have seen as the summary anyway.
+        description: data.description || firstParagraph(html),
+        html,
       };
     })
     .filter((p) => !p.draft)
@@ -203,7 +299,27 @@ function buildBlog(posts) {
       (p.date ? `<p class="byline">${esc(formatDate(p.date))}</p>\n` : '') +
       externalLinks(p.html) +
       `</article>\n<p class="more"><a href="/blog/">← All posts</a></p>`;
-    write(`blog/${p.slug}/index.html`, shell({ title: `${p.title} · ${SITE.name}`, currentPath: '/blog/', body, source: `blog/posts/${p.slug}.md` }));
+    const url = `/blog/${p.slug}/`;
+    write(`blog/${p.slug}/index.html`, shell({
+      title: `${p.title} · ${SITE.name}`,
+      description: p.description,
+      currentPath: '/blog/',
+      url,
+      body,
+      source: `blog/posts/${p.slug}.md`,
+      ogType: 'article',
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: p.title,
+        description: clip(p.description),
+        image: abs(SITE.image),
+        url: abs(url),
+        mainEntityOfPage: abs(url),
+        ...(p.date ? { datePublished: p.date, dateModified: p.date } : {}),
+        author: { '@type': 'Person', name: SITE.name, url: abs('/') },
+      },
+    }));
   });
 
   const list = posts.length
@@ -221,9 +337,16 @@ function buildBlog(posts) {
 
   // The feed is declared in every page's <head> for readers that autodiscover it;
   // this is the visible link, for people who subscribe by hand.
-  const feed = '<p class="more"><a href="/feed.xml">Atom feed</a></p>';
+  const feed = '<p>You can find an RSS / Atom feed of my blogs <a href="/feed.xml">here</a>.</p>';
 
-  write('blog/index.html', shell({ title: `Blog · ${SITE.name}`, currentPath: '/blog/', body: `<h1>Blog</h1>\n${list}\n${feed}`, source: 'blog/posts/ (generated index)' }));
+  write('blog/index.html', shell({
+    title: `Blog · ${SITE.name}`,
+    description: SITE.nav.find((n) => n.path === '/blog/').description,
+    currentPath: '/blog/',
+    url: '/blog/',
+    body: `<h1>Blog</h1>\n${feed}\n${list}`,
+    source: 'blog/posts/ (generated index)',
+  }));
 
   return posts.length;
 }
@@ -267,11 +390,57 @@ ${entries}
   return posts.length;
 }
 
+// ---------------------------------------------------------------- sitemap
+
+/**
+ * sitemap.xml and robots.txt, from the same page list the site is built from,
+ * so a page can never be published without also being announced. The 404 is the
+ * one generated page left out - it is marked noindex.
+ */
+function buildSitemap(posts) {
+  const urls = [
+    { loc: '/' },
+    ...SITE.nav.filter((n) => n.page).map((n) => ({ loc: n.path })),
+    { loc: '/blog/', lastmod: posts.length ? posts[0].date : null },
+    ...posts.map((p) => ({ loc: `/blog/${p.slug}/`, lastmod: p.date })),
+  ];
+
+  write(
+    'sitemap.xml',
+    `<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+  .map(
+    (u) =>
+      `  <url>\n    <loc>${abs(u.loc)}</loc>` +
+      (u.lastmod ? `\n    <lastmod>${u.lastmod}</lastmod>` : '') +
+      '\n  </url>'
+  )
+  .join('\n')}
+</urlset>
+`
+  );
+
+  // No Disallow for /404.html: robots.txt and noindex do not stack. Blocking the
+  // crawl would stop Google ever reading the noindex, leaving the URL eligible to
+  // appear bare and snippet-less. The meta tag alone is what actually excludes it.
+  write('robots.txt', `User-agent: *
+Allow: /
+
+Sitemap: ${abs('/sitemap.xml')}
+`);
+
+  return urls.length;
+}
+
 // ---------------------------------------------------------------- run
 
 const pageCount = buildPages();
 const posts = readPosts();
 const postCount = buildBlog(posts);
 buildFeed(posts);
+const urlCount = buildSitemap(posts);
 
-console.log(`${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}, feed.xml`);
+console.log(
+  `${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}, feed.xml, sitemap.xml (${urlCount} urls), robots.txt`
+);

@@ -40,6 +40,29 @@ function and rebuilding — there is no per-page boilerplate to keep in sync.
 `pages/<page>.html` to `<path>/index.html`. Blog has no `"page"` because it is generated from
 markdown. Adding a section: create `pages/<name>.html`, add the entry, rebuild.
 
+Every entry also carries a `description` — that is the meta description, and the text under the
+link when the page is shared. It is copy, not configuration: write it for a human reading a
+search result, keep it under about 155 characters, and don't leave it off a new section. The top
+level of `site.json` holds `jobTitle`, `description`, `image` and `sameAs`, which feed the home
+page's metadata and its `Person` structured data.
+
+**Metadata is generated, never hand-written.** `shell()` emits the description, canonical URL,
+and Open Graph and Twitter tags for every page from those fields. Schema.org JSON-LD goes on the
+home page (`Person`, via `personLd()`) and on posts (`BlogPosting`) — and nowhere else, so the
+other pages carry no weight they don't need. That `<script type="application/ld+json">` block is
+data: browsers parse it and never execute it, so it is not on the critical path and the site
+still runs no JavaScript. Don't add a script tag that does.
+
+**`sitemap.xml` and `robots.txt` are built** by `buildSitemap()`, from the same page list the
+site is built from, so a page cannot ship without being announced. `404.html` is generated too,
+from `pages/404.html`, and is the one page marked `noindex` — GitHub Pages serves it with a real
+404 status for unmatched paths, but answers 200 when it is fetched directly.
+
+**The social preview image** is `static/og.png`, 1200×630, built from `static/og.svg` with
+`rsvg-convert -w 1200 -h 630 static/og.svg -o static/og.png`. Edit the SVG and re-run that; don't
+edit the PNG. It is the site's own furniture — white ground, the cyan accent, the display stack —
+and no browser ever requests it, only a social scraper does, so the two-request rule still holds.
+
 **One post per directory.** `blog/posts/<slug>.md` → `blog/<slug>/index.html`, so every post has
 a real URL. Frontmatter takes `title`, `date` (ISO) and `draft: true`. The build deletes
 directories under `blog/` that no longer match a published post, so renaming or drafting removes

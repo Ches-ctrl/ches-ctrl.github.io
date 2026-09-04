@@ -1,55 +1,75 @@
 {
   "name": "Charlie Cheesman",
   "url": "https://www.charliecheesman.net",
+  "jobTitle": "AI deployment strategist",
+  "description": "Charlie Cheesman is an AI deployment strategist in London. Five years at EY-Parthenon, where he set up the AI Lab and wrote the UK AI strategy.",
+  "image": "/static/og.png",
+  "sameAs": [
+    "https://www.linkedin.com/in/charliecheesman",
+    "https://x.com/charliecheesma1",
+    "https://github.com/Ches-ctrl",
+    "https://moloqo.com",
+    "https://unicornmafia.ai"
+  ],
   "nav": [
     {
       "label": "About",
       "path": "/about/",
-      "page": "about"
+      "page": "about",
+      "description": "AI deployment strategist in London. Five years at EY-Parthenon, founder of Unicorn Mafia, and a company built and sold in 20 hours."
     },
     {
       "label": "Work",
       "path": "/work/",
-      "page": "work"
+      "page": "work",
+      "description": "AI strategy, enterprise rollout and governance for private equity firms and large corporates - as a fractional AI strategist or per project."
     },
     {
       "label": "Career",
       "path": "/career/",
-      "page": "career"
+      "page": "career",
+      "description": "Charlie Cheesman's career to date: Moloqo, the20hr.co, Unicorn Mafia, EY-Parthenon, Equiteq, HSBC, Mercer, Oxford and Durham."
     },
     {
       "label": "Blog",
-      "path": "/blog/"
+      "path": "/blog/",
+      "description": "Writing by Charlie Cheesman on AI deployment, strategy and building things."
     },
     {
       "label": "Ideas",
       "path": "/ideas/",
-      "page": "ideas"
+      "page": "ideas",
+      "description": "A collection of ideas at various stages of development - on net zero, rationality, impact arbitrage and advance market commitments."
     },
     {
       "label": "Questions",
       "path": "/questions/",
-      "page": "questions"
+      "page": "questions",
+      "description": "Thoughts and questions Charlie Cheesman keeps coming back to - on intelligence, signalling, fairness and markets."
     },
     {
       "label": "Bookshelf",
       "path": "/bookshelf/",
-      "page": "bookshelf"
+      "page": "bookshelf",
+      "description": "Books worth reading on founders and companies, startups, sales, engineering, design, thinking and fiction."
     },
     {
       "label": "Tech stack",
       "path": "/tech-stack/",
-      "page": "tech-stack"
+      "page": "tech-stack",
+      "description": "The tools Charlie Cheesman actually uses, for work and personally - Linear, Cursor, Claude, Obsidian and the rest."
     },
     {
       "label": "Links",
       "path": "/links/",
-      "page": "links"
+      "page": "links",
+      "description": "Favourite personal sites from across the web - Patrick Collison, Paul Graham, Simon Willison, Dan Luu and more."
     },
     {
       "label": "Contact",
       "path": "/contact/",
-      "page": "contact"
+      "page": "contact",
+      "description": "Get in touch with Charlie Cheesman - LinkedIn, X, GitHub, Moloqo and Unicorn Mafia."
     }
   ]
 }
