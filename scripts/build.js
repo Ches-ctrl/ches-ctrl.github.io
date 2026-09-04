@@ -53,7 +53,7 @@ function write(relPath, html) {
  * it, so the no-JavaScript rule still holds and nothing is added to the critical
  * path. It is emitted only where it earns its place - the home page and posts.
  */
-function shell({ title, description, currentPath, url, body, source = 'pages/', ogType = 'website', jsonLd = null, noindex = false }) {
+function shell({ title, description, currentPath, url, body, source = 'pages/', ogType = 'website', jsonLd = null, noindex = false, nameHeading = false }) {
   const nav = SITE.nav
     .map((n) => {
       const current = n.path === currentPath ? ' class="current"' : '';
@@ -62,6 +62,13 @@ function shell({ title, description, currentPath, url, body, source = 'pages/', 
       return `      <a href="${n.path}"${current}${external}>${esc(n.label)}</a>`;
     })
     .join('\n');
+
+  // The home page has no body copy, so without this it would be the one page on the
+  // site with no h1 at all. The name in the index is already the page's heading in
+  // every sense that matters, so it is promoted to h1 there and left a <p> elsewhere,
+  // where main already supplies one. `.name` fixes font-size and weight, so the two
+  // render identically - this changes the markup and not a single pixel.
+  const nameTag = nameHeading ? 'h1' : 'p';
 
   const desc = clip(description || SITE.description);
   const canonical = abs(url || currentPath);
@@ -119,7 +126,7 @@ gtag('config', '${SITE.analytics}');
 <div class="page">
   <aside>
     <div class="accent"></div>
-    <p class="name"><a href="/">${esc(SITE.name)}</a></p>
+    <${nameTag} class="name"><a href="/">${esc(SITE.name)}</a></${nameTag}>
     <nav>
 ${nav}
     </nav>
@@ -204,8 +211,11 @@ function personLd() {
       '@id': abs('/') + '#person',
       name: SITE.name,
       url: abs('/'),
-      image: abs(SITE.image),
+      // `photo` not `image`: og.png is a text card, which is right for a social
+      // preview and wrong for a Person - Google wants an actual photograph here.
+      image: abs(SITE.photo),
       jobTitle: SITE.jobTitle,
+      address: { '@type': 'PostalAddress', ...SITE.address },
       description: SITE.description,
       sameAs: SITE.sameAs,
       worksFor: SITE.worksFor.map((o) => ({ '@type': 'Organization', name: o.name, url: o.url })),
@@ -218,10 +228,15 @@ function personLd() {
 function buildPages() {
   // Home
   write('index.html', shell({
-    title: SITE.name,
+    // The one page whose title is not "<Label> · <Name>". It is the page that has to
+    // rank for the name itself, and it has no body copy to say what he does - so the
+    // job title goes in the title tag, which is not rendered on the page. The home
+    // page still shows the name and the index and nothing else.
+    title: `${SITE.name} — ${SITE.jobTitle}`,
     description: SITE.description,
     currentPath: '/',
     url: '/',
+    nameHeading: true,
     body: stripNotes(externalLinks(inlineLogos(read('pages/index.html').trimEnd()))),
     source: 'pages/index.html',
     jsonLd: personLd(),

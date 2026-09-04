@@ -4,6 +4,13 @@
   "jobTitle": "AI deployment strategist",
   "description": "Charlie Cheesman is an AI deployment strategist in London. Five years at EY-Parthenon, where he set up the AI Lab and wrote the UK AI strategy.",
   "image": "/static/og.png",
+  "photo": "/static/img/charlie.jpg",
+  "address": {
+    "streetAddress": "71-75 Shelton Street",
+    "addressLocality": "London",
+    "postalCode": "WC2H 9JQ",
+    "addressCountry": "GB"
+  },
   "sameAs": [
     "https://www.linkedin.com/in/charliecheesman",
     "https://x.com/charliecheesma1",

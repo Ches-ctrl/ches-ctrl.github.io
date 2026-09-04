@@ -46,7 +46,9 @@ aside {
   background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
 }
 
-.name { margin: 0 0 10px; }
+/* p on most pages, h1 on the home page - see shell(). Size and weight are declared
+   so the two are indistinguishable; without this the h1 would default to bold 2em. */
+.name { font-size: 1em; font-weight: normal; margin: 0 0 10px; }
 .name a { color: #000; text-decoration: none; }
 
 nav { display: flex; flex-direction: column; }
