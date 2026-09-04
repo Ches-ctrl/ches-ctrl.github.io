@@ -2,3 +2,7 @@
 node_modules/
 # guard against stray dirs from unexpanded ~ in quoted paths
 /~/
+
+# source images kept locally; processed copies live in static/
+/charlie-headshot.jpg
+/moloqo-logo.jpeg

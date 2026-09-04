@@ -46,7 +46,7 @@ aside {
   background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
 }
 
-.name { margin: 0; }
+.name { margin: 0 0 10px; }
 .name a { color: #000; text-decoration: none; }
 
 nav { display: flex; flex-direction: column; }
@@ -56,6 +56,15 @@ nav a { color: var(--link); }
 nav a.current { color: #000; }
 
 /* ---- content (his #content) ---- */
+
+.headshot {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: block;
+  margin: 0 0 1.4em;
+}
+
 
 main {
   flex: 1 1 auto;

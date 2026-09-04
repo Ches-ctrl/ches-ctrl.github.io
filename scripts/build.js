@@ -70,11 +70,31 @@ ${body}
 `;
 }
 
+/**
+ * Inline logo images as data URIs.
+ *
+ * Each logo was a separate request that arrived after the HTML and CSS, so the
+ * images popped in a beat late and shifted the layout as they did - a visible
+ * flash on every load. Inlining puts them in the document itself: no extra
+ * requests, nothing to arrive late. Explicit width/height is set too, so the
+ * space is reserved even before decode.
+ */
+function inlineLogos(html) {
+  return html.replace(/<img src="(\/static\/logos\/[^"]+)"([^>]*)>/g, (whole, src, rest) => {
+    const file = path.join(ROOT, src.replace(/^\//, ''));
+    if (!fs.existsSync(file)) return whole;
+    const b64 = fs.readFileSync(file).toString('base64');
+    const type = src.endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const dims = /width=/.test(rest) ? '' : ' width="26" height="26"';
+    return `<img src="data:${type};base64,${b64}"${rest}${dims}>`;
+  });
+}
+
 // ---------------------------------------------------------------- pages
 
 function buildPages() {
   // Home
-  write('index.html', shell({ title: SITE.name, currentPath: '/', body: read('pages/index.html').trimEnd() }));
+  write('index.html', shell({ title: SITE.name, currentPath: '/', body: inlineLogos(read('pages/index.html').trimEnd()) }));
 
   // Section pages
   SITE.nav
@@ -86,7 +106,7 @@ function buildPages() {
         shell({
           title: `${n.label} · ${SITE.name}`,
           currentPath: n.path,
-          body: read(`pages/${n.page}.html`).trimEnd(),
+          body: inlineLogos(read(`pages/${n.page}.html`).trimEnd()),
         })
       );
     });
