@@ -6,9 +6,7 @@
   "image": "/static/og.png",
   "photo": "/static/img/charlie.jpg",
   "address": {
-    "streetAddress": "71-75 Shelton Street",
     "addressLocality": "London",
-    "postalCode": "WC2H 9JQ",
     "addressCountry": "GB"
   },
   "sameAs": [
@@ -19,7 +17,13 @@
   "worksFor": [
     {
       "name": "Moloqo",
-      "url": "https://moloqo.com"
+      "url": "https://moloqo.com",
+      "address": {
+        "streetAddress": "71-75 Shelton Street",
+        "addressLocality": "London",
+        "postalCode": "WC2H 9JQ",
+        "addressCountry": "GB"
+      }
     },
     {
       "name": "Unicorn Mafia",

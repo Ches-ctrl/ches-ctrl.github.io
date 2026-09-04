@@ -218,7 +218,12 @@ function personLd() {
       address: { '@type': 'PostalAddress', ...SITE.address },
       description: SITE.description,
       sameAs: SITE.sameAs,
-      worksFor: SITE.worksFor.map((o) => ({ '@type': 'Organization', name: o.name, url: o.url })),
+      worksFor: SITE.worksFor.map((o) => ({
+        '@type': 'Organization',
+        name: o.name,
+        url: o.url,
+        ...(o.address ? { address: { '@type': 'PostalAddress', ...o.address } } : {}),
+      })),
       alumniOf: SITE.alumniOf.map((o) => ({ '@type': 'CollegeOrUniversity', name: o.name, url: o.url })),
       knowsAbout: SITE.knowsAbout,
     },

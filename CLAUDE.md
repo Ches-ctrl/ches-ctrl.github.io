@@ -59,10 +59,13 @@ is used only for `Person.image` in the JSON-LD, because Google wants a face ther
 earns nothing. Neither is ever fetched by a browser - only by a scraper or a crawler - so their
 weight is off the critical path and the two-request rule is unaffected.
 
-`address` is Moloqo's registered office, from Companies House. Note that 71-75 Shelton Street is
-a shared registered-office service used by a great many companies, so the part of it carrying
-real weight is `addressLocality` / `addressCountry`. Trimming it to those two is a defensible
-change; adding a residential address is not.
+`address` on the person is `addressLocality` / `addressCountry` only, and that is deliberate.
+The full registered office - 71-75 Shelton Street, from Companies House - sits on the Moloqo
+entry in `worksFor` instead, where it is unambiguously true. It was briefly on the person, which
+was wrong twice over: `Person.address` asserts where *he* lives, and that postcode is a shared
+registered-office service used by a great many companies, so it disambiguates nothing. London and
+GB are the parts that carry signal. Any `worksFor` entry may carry an `address`; it is emitted
+only when present. Don't add a residential address to either.
 
 Two of those are easy to get wrong. `sameAs` is only for alternate representations of Charlie
 himself — LinkedIn, X, GitHub. Organisations he is affiliated with are a different claim and go
