@@ -3,6 +3,8 @@
   "url": "https://www.charliecheesman.net",
   "nav": [
     { "label": "About",      "path": "/about/",      "page": "about" },
+    { "label": "Work",       "path": "https://moloqo.com" },
+    { "label": "Career",     "path": "/career/",     "page": "career" },
     { "label": "Blog",       "path": "/blog/" },
     { "label": "Ideas",      "path": "/ideas/",      "page": "ideas" },
     { "label": "Bookshelf",  "path": "/bookshelf/",  "page": "bookshelf" },
