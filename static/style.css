@@ -184,6 +184,11 @@ img { max-width: 100%; height: auto; }
 .entries li { margin-bottom: 0.7em; }
 .entries .meta { display: block; font-size: 10px; color: #aaa; }
 
+/* description on its own line, at reading size - narrow column makes
+   "title - description" on one line hard to scan */
+.entries .desc { display: block; color: #333; }
+.entries li:has(.desc) { margin-bottom: 1.1em; }
+
 /* ---- narrow screens: index stacks above content ---- */
 
 @media (max-width: 640px) {
