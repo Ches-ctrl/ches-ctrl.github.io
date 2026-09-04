@@ -72,6 +72,24 @@ function shell({ title, description, currentPath, url, body, source = 'pages/', 
     ? `\n<script type="application/ld+json">${JSON.stringify(jsonLd).replace(/</g, '\\u003c')}</script>`
     : '';
 
+  // Google Analytics. This is the one thing on the site that fetches from a third
+  // party and the one script that actually executes - see the note in CLAUDE.md.
+  // `async` is load-bearing: it keeps gtag.js off the critical path so first paint
+  // is still the HTML and the stylesheet alone. Set `analytics` to "" to remove it
+  // everywhere; there is no per-page opt-out by design, since a partial measurement
+  // is worse than none.
+  const ga = SITE.analytics
+    ? `
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${SITE.analytics}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${SITE.analytics}');
+</script>`
+    : '';
+
   return `<!-- GENERATED FILE - DO NOT EDIT.
      Your changes here are overwritten by the next \`npm run build\`.
      Edit the source instead: ${esc(source)} -->
@@ -95,7 +113,7 @@ function shell({ title, description, currentPath, url, body, source = 'pages/', 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:creator" content="@charliecheesma1">
 <link rel="stylesheet" href="/static/style.css">
-<link rel="alternate" type="application/atom+xml" title="${esc(SITE.name)}" href="/feed.xml">${ld}
+<link rel="alternate" type="application/atom+xml" title="${esc(SITE.name)}" href="/feed.xml">${ld}${ga}
 </head>
 <body>
 <div class="page">

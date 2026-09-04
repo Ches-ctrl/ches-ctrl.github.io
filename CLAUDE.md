@@ -9,8 +9,14 @@ https://www.charliecheesman.net (see `CNAME`). `.nojekyll` disables Jekyll proce
 
 Deliberately modelled on paulgraham.com and patrickcollison.com: left-aligned, vertical index
 in a left column, content beside it. The governing constraint is **nothing blocks the first
-paint** — no webfonts, no framework, no client-side rendering. Two requests per page, the HTML
-and one cached stylesheet. Check anything you add to `<head>` against that.
+paint** — no webfonts, no framework, no client-side rendering. Two blocking requests per page,
+the HTML and one cached stylesheet. Check anything you add to `<head>` against that.
+
+The one exception is Google Analytics, added at Charlie's request. It is the site's only
+third-party fetch and its only executing script. It is `async`, so it stays off the critical
+path and first paint is still the HTML and the stylesheet alone — but the page is no longer two
+requests in total, and the site is no longer JavaScript-free. Both claims used to be absolute
+and are now qualified; don't let a third thing in on the strength of the precedent.
 
 An earlier version used a Tailwind CDN script (407KB, render-blocking) plus three Google Font
 families, hidden behind `body { visibility: hidden }` until `document.fonts.ready` resolved.
@@ -66,7 +72,13 @@ retired it for all sites in May 2026, and the questions page has no answers anyw
 `Service` on the work page (valid, but no rich result attaches to it). Each would add bytes for
 nothing. That `<script type="application/ld+json">` block is
 data: browsers parse it and never execute it, so it is not on the critical path and the site
-still runs no JavaScript. Don't add a script tag that does.
+is not on the critical path. Apart from the analytics tag described at the top, don't add a
+script tag that executes.
+
+**Analytics is one field.** `analytics` in `site.json` holds the GA4 measurement id, and
+`shell()` emits the tag on every generated page from it — including `404.html`, which is worth
+having. Setting it to `""` removes the tag everywhere and restores the original zero-JavaScript
+build; there is deliberately no per-page opt-out, since partial measurement is worse than none.
 
 **`sitemap.xml` and `robots.txt` are built** by `buildSitemap()`, from the same page list the
 site is built from, so a page cannot ship without being announced. `404.html` is generated too,
@@ -128,7 +140,8 @@ to move off exact.
 
 The cyan `.accent` line above the name goes on **every** page — his one addition to Collison's
 design. It is a plain `<div class="accent">` emitted by `shell()` plus one CSS gradient rule.
-There is no JS on this site at all; if it looks missing on a page, that is browser cache.
+The only JavaScript on the site is the analytics tag, which touches nothing visual; if the line
+looks missing on a page, that is browser cache.
 
 **The home page carries only his name and the index — no tagline, no intro line.** Its content
 source is `pages/index.html`, which is intentionally empty. He flagged this as a state he may
