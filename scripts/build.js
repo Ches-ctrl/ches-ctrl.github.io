@@ -48,6 +48,7 @@ function shell({ title, currentPath, body }) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <link rel="stylesheet" href="/static/style.css">
+<link rel="alternate" type="application/atom+xml" title="${esc(SITE.name)}" href="/feed.xml">
 </head>
 <body>
 <div class="page">
@@ -173,9 +174,50 @@ function buildBlog(posts) {
   return posts.length;
 }
 
+// ---------------------------------------------------------------- feed
+
+/** Atom 1.0. Absolute URLs throughout, as the spec requires. */
+function buildFeed(posts) {
+  const site = SITE.url.replace(/\/$/, '');
+  const stamp = (iso) => new Date((iso || '1970-01-01') + 'T00:00:00Z').toISOString();
+  const updated = posts.length ? stamp(posts[0].date) : new Date().toISOString();
+
+  const entries = posts
+    .map((p) => {
+      const url = `${site}/blog/${p.slug}/`;
+      return `  <entry>
+    <title>${esc(p.title)}</title>
+    <link href="${url}"/>
+    <id>${url}</id>
+    <updated>${stamp(p.date)}</updated>
+    <content type="html">${esc(p.html)}</content>
+  </entry>`;
+    })
+    .join('\n');
+
+  write(
+    'feed.xml',
+    `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>${esc(SITE.name)}</title>
+  <subtitle>Writing by ${esc(SITE.name)}</subtitle>
+  <link href="${site}/"/>
+  <link rel="self" type="application/atom+xml" href="${site}/feed.xml"/>
+  <id>${site}/</id>
+  <updated>${updated}</updated>
+  <author><name>${esc(SITE.name)}</name></author>
+${entries}
+</feed>
+`
+  );
+  return posts.length;
+}
+
 // ---------------------------------------------------------------- run
 
 const pageCount = buildPages();
-const postCount = buildBlog(readPosts());
+const posts = readPosts();
+const postCount = buildBlog(posts);
+buildFeed(posts);
 
-console.log(`${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}`);
+console.log(`${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}, feed.xml`);

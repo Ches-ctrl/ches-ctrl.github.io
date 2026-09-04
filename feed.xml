@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Charlie Cheesman</title>
+  <subtitle>Writing by Charlie Cheesman</subtitle>
+  <link href="https://www.charliecheesman.net/"/>
+  <link rel="self" type="application/atom+xml" href="https://www.charliecheesman.net/feed.xml"/>
+  <id>https://www.charliecheesman.net/</id>
+  <updated>2026-09-02T00:00:00.000Z</updated>
+  <author><name>Charlie Cheesman</name></author>
+  <entry>
+    <title>Sample post</title>
+    <link href="https://www.charliecheesman.net/blog/sample-post/"/>
+    <id>https://www.charliecheesman.net/blog/sample-post/</id>
+    <updated>2026-09-02T00:00:00.000Z</updated>
+    <content type="html">&lt;p&gt;This is a sample post so you can see how the format renders. Delete the file and run
+&lt;code&gt;npm run build&lt;/code&gt; when you want it gone.&lt;/p&gt;
+&lt;p&gt;Everything above the second &lt;code&gt;---&lt;/code&gt; is frontmatter. &lt;code&gt;title&lt;/code&gt; sets the heading and the browser
+tab, &lt;code&gt;date&lt;/code&gt; sets the byline and the sort order on the blog index. Add &lt;code&gt;draft: true&lt;/code&gt; to keep
+a post out of the build while you work on it.&lt;/p&gt;
+&lt;h2&gt;Headings become sections&lt;/h2&gt;
+&lt;p&gt;Body text is ordinary Markdown. You get &lt;strong&gt;bold&lt;/strong&gt;, &lt;em&gt;italic&lt;/em&gt;, &lt;code&gt;inline code&lt;/code&gt;, and
+&lt;a href=&quot;https://patrickcollison.com&quot;&gt;links&lt;/a&gt; without thinking about it.&lt;/p&gt;
+&lt;p&gt;Lists work as expected:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;One item&lt;/li&gt;
+&lt;li&gt;Another item&lt;/li&gt;
+&lt;li&gt;A third&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And numbered ones:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;First&lt;/li&gt;
+&lt;li&gt;Second&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Block quotes look like this - useful for pulling out a line from something you&amp;#39;re
+responding to.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Code blocks keep their whitespace:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-bash&quot;&gt;npm run build
+git add -A &amp;amp;&amp;amp; git commit -m &amp;quot;post: sample&amp;quot; &amp;amp;&amp;amp; git push
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;p&gt;A horizontal rule gives you a section break when a heading would be too heavy.&lt;/p&gt;
+&lt;p&gt;The filename becomes the URL. This file is &lt;code&gt;blog/posts/sample-post.md&lt;/code&gt;, so it is served at
+&lt;code&gt;/blog/sample-post/&lt;/code&gt; - a real page, linkable and indexable, with the text in the HTML.&lt;/p&gt;
+</content>
+  </entry>
+</feed>
