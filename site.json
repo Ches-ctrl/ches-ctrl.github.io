@@ -7,9 +7,30 @@
   "sameAs": [
     "https://www.linkedin.com/in/charliecheesman",
     "https://x.com/charliecheesma1",
-    "https://github.com/Ches-ctrl",
-    "https://moloqo.com",
-    "https://unicornmafia.ai"
+    "https://github.com/Ches-ctrl"
+  ],
+  "worksFor": [
+    {
+      "name": "Moloqo",
+      "url": "https://moloqo.com"
+    },
+    {
+      "name": "Unicorn Mafia",
+      "url": "https://unicornmafia.ai"
+    }
+  ],
+  "alumniOf": [
+    {
+      "name": "University of Oxford",
+      "url": "https://www.ox.ac.uk"
+    }
+  ],
+  "knowsAbout": [
+    "AI strategy",
+    "Enterprise AI rollout",
+    "AI governance",
+    "AI deployment",
+    "Context and data architecture"
   ],
   "nav": [
     {

@@ -162,22 +162,38 @@ function stripNotes(html) {
 // ---------------------------------------------------------------- pages
 
 /**
- * Schema.org Person for the home page.
+ * Schema.org ProfilePage for the home page.
  *
  * This is the site's one entity claim: it ties the domain to the person, and
- * `sameAs` is what lets a search engine connect it to the profiles and press
- * coverage elsewhere. Kept in site.json so the facts live with the rest of them.
+ * `sameAs` is what lets a search engine connect it to the profiles elsewhere.
+ * All of it is kept in site.json so the facts live with the rest of them.
+ *
+ * The Person is wrapped in ProfilePage rather than emitted bare because Google's
+ * profile-page treatment only triggers on the wrapper - a top-level Person still
+ * feeds entity resolution, but earns no SERP feature of its own.
+ *
+ * `sameAs` holds only alternate representations of the person himself. The
+ * organisations he is affiliated with are a different claim and belong in
+ * `worksFor`. `alumniOf` is Oxford alone, deliberately: the about page says he
+ * dropped out of Durham, so listing it would be a false claim in structured data.
  */
 function personLd() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: SITE.name,
-    url: abs('/'),
-    image: abs(SITE.image),
-    jobTitle: SITE.jobTitle,
-    description: SITE.description,
-    sameAs: SITE.sameAs,
+    '@type': 'ProfilePage',
+    mainEntity: {
+      '@type': 'Person',
+      '@id': abs('/') + '#person',
+      name: SITE.name,
+      url: abs('/'),
+      image: abs(SITE.image),
+      jobTitle: SITE.jobTitle,
+      description: SITE.description,
+      sameAs: SITE.sameAs,
+      worksFor: SITE.worksFor.map((o) => ({ '@type': 'Organization', name: o.name, url: o.url })),
+      alumniOf: SITE.alumniOf.map((o) => ({ '@type': 'CollegeOrUniversity', name: o.name, url: o.url })),
+      knowsAbout: SITE.knowsAbout,
+    },
   };
 }
 
@@ -308,16 +324,32 @@ function buildBlog(posts) {
       body,
       source: `blog/posts/${p.slug}.md`,
       ogType: 'article',
+      // Two nodes, so a @graph. The breadcrumb is one of the few remaining types
+      // that visibly changes the result - a path trail in place of a raw URL.
+      // The author Person stays inline rather than referencing the home page's
+      // #person @id: Google does not reliably stitch @id across separate pages.
       jsonLd: {
         '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
-        headline: p.title,
-        description: clip(p.description),
-        image: abs(SITE.image),
-        url: abs(url),
-        mainEntityOfPage: abs(url),
-        ...(p.date ? { datePublished: p.date, dateModified: p.date } : {}),
-        author: { '@type': 'Person', name: SITE.name, url: abs('/') },
+        '@graph': [
+          {
+            '@type': 'BlogPosting',
+            headline: p.title,
+            description: clip(p.description),
+            image: abs(SITE.image),
+            url: abs(url),
+            mainEntityOfPage: abs(url),
+            ...(p.date ? { datePublished: p.date, dateModified: p.date } : {}),
+            author: { '@type': 'Person', name: SITE.name, url: abs('/') },
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: SITE.name, item: abs('/') },
+              { '@type': 'ListItem', position: 2, name: 'Blog', item: abs('/blog/') },
+              { '@type': 'ListItem', position: 3, name: p.title, item: abs(url) },
+            ],
+          },
+        ],
       },
     }));
   });
