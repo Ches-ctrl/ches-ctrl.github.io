@@ -8,7 +8,7 @@
   <updated>2026-09-02T00:00:00.000Z</updated>
   <author><name>Charlie Cheesman</name></author>
   <entry>
-    <title>print(hello_world)</title>
+    <title>print(&quot;Hello, World!&quot;)</title>
     <link href="https://www.charliecheesman.net/blog/sample-post/"/>
     <id>https://www.charliecheesman.net/blog/sample-post/</id>
     <updated>2026-09-02T00:00:00.000Z</updated>

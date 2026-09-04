@@ -9,8 +9,14 @@ https://www.charliecheesman.net (see `CNAME`). `.nojekyll` disables Jekyll proce
 
 Deliberately modelled on paulgraham.com and patrickcollison.com: left-aligned, vertical index
 in a left column, content beside it. The governing constraint is **nothing blocks the first
-paint** — no webfonts, no framework, no client-side rendering. Two requests per page, the HTML
-and one cached stylesheet. Check anything you add to `<head>` against that.
+paint** — no webfonts, no framework, no client-side rendering. Two blocking requests per page,
+the HTML and one cached stylesheet. Check anything you add to `<head>` against that.
+
+The one exception is Google Analytics, added at Charlie's request. It is the site's only
+third-party fetch and its only executing script. It is `async`, so it stays off the critical
+path and first paint is still the HTML and the stylesheet alone — but the page is no longer two
+requests in total, and the site is no longer JavaScript-free. Both claims used to be absolute
+and are now qualified; don't let a third thing in on the strength of the precedent.
 
 An earlier version used a Tailwind CDN script (407KB, render-blocking) plus three Google Font
 families, hidden behind `body { visibility: hidden }` until `document.fonts.ready` resolved.
@@ -40,14 +46,59 @@ function and rebuilding — there is no per-page boilerplate to keep in sync.
 `pages/<page>.html` to `<path>/index.html`. Blog has no `"page"` because it is generated from
 markdown. Adding a section: create `pages/<name>.html`, add the entry, rebuild.
 
+Every entry also carries a `description` — that is the meta description, and the text under the
+link when the page is shared. It is copy, not configuration: write it for a human reading a
+search result, keep it under about 155 characters, and don't leave it off a new section. The top
+level of `site.json` holds `jobTitle`, `description`, `image`, `sameAs`, `worksFor`, `alumniOf`
+and `knowsAbout`, which feed the home page's metadata and its structured data.
+
+Two of those are easy to get wrong. `sameAs` is only for alternate representations of Charlie
+himself — LinkedIn, X, GitHub. Organisations he is affiliated with are a different claim and go
+in `worksFor`; putting them in `sameAs` asserts that moloqo.com *is* him. And `alumniOf` is
+Oxford alone, deliberately — the about page says he dropped out of Durham, so listing Durham
+would be a false claim in structured data. Don't "complete" it.
+
+**Metadata is generated, never hand-written.** `shell()` emits the description, canonical URL,
+and Open Graph and Twitter tags for every page from those fields. Schema.org JSON-LD goes on the
+home page (`ProfilePage` wrapping a `Person`, via `personLd()`) and on posts (a `@graph` of
+`BlogPosting` + `BreadcrumbList`) — and nowhere else, so the other pages carry no weight they
+don't need. The `ProfilePage` wrapper is load-bearing: Google's profile-page treatment triggers
+on it, and a bare top-level `Person` earns no SERP feature of its own.
+
+Types deliberately **not** emitted, having been assessed and rejected: `WebSite`/`SearchAction`
+(only ever powered the sitelinks searchbox, which needs real on-site search), `ItemList` on the
+bookshelf, links and tech-stack pages (no rich result targets a curated list), `FAQPage` (Google
+retired it for all sites in May 2026, and the questions page has no answers anyway), and
+`Service` on the work page (valid, but no rich result attaches to it). Each would add bytes for
+nothing. That `<script type="application/ld+json">` block is
+data: browsers parse it and never execute it, so it is not on the critical path and the site
+is not on the critical path. Apart from the analytics tag described at the top, don't add a
+script tag that executes.
+
+**Analytics is one field.** `analytics` in `site.json` holds the GA4 measurement id, and
+`shell()` emits the tag on every generated page from it — including `404.html`, which is worth
+having. Setting it to `""` removes the tag everywhere and restores the original zero-JavaScript
+build; there is deliberately no per-page opt-out, since partial measurement is worse than none.
+
+**`sitemap.xml` and `robots.txt` are built** by `buildSitemap()`, from the same page list the
+site is built from, so a page cannot ship without being announced. `404.html` is generated too,
+from `pages/404.html`, and is the one page marked `noindex` — GitHub Pages serves it with a real
+404 status for unmatched paths, but answers 200 when it is fetched directly.
+
+**The social preview image** is `static/og.png`, 1200×630, built from `static/og.svg` with
+`rsvg-convert -w 1200 -h 630 static/og.svg -o static/og.png`. Edit the SVG and re-run that; don't
+edit the PNG. It is the site's own furniture — white ground, the cyan accent, the display stack —
+and no browser ever requests it, only a social scraper does, so the two-request rule still holds.
+
 **One post per directory.** `blog/posts/<slug>.md` → `blog/<slug>/index.html`, so every post has
 a real URL. Frontmatter takes `title`, `date` (ISO) and `draft: true`. The build deletes
 directories under `blog/` that no longer match a published post, so renaming or drafting removes
 the stale page — this is why it deletes, and why `posts` is on its keep-list.
 
 **The blog has an Atom feed** at `/feed.xml`, generated by `buildFeed()` from the same posts as
-the blog index, with autodiscovery declared in every page's `<head>`. Absolute URLs are required
-by the spec, so it reads `SITE.url` - keep that field correct.
+the blog index, with autodiscovery declared in every page's `<head>` and a visible "Atom feed"
+link under the post list, emitted by `buildBlog()`. Absolute URLs are required by the spec, so
+it reads `SITE.url` - keep that field correct.
 
 **Off-site links open in a new tab automatically.** `externalLinks()` adds
 `target="_blank" rel="noopener"` at build time to page bodies and rendered posts, so it covers
@@ -89,7 +140,8 @@ to move off exact.
 
 The cyan `.accent` line above the name goes on **every** page — his one addition to Collison's
 design. It is a plain `<div class="accent">` emitted by `shell()` plus one CSS gradient rule.
-There is no JS on this site at all; if it looks missing on a page, that is browser cache.
+The only JavaScript on the site is the analytics tag, which touches nothing visual; if the line
+looks missing on a page, that is browser cache.
 
 **The home page carries only his name and the index — no tagline, no intro line.** Its content
 source is `pages/index.html`, which is intentionally empty. He flagged this as a state he may
@@ -97,9 +149,15 @@ want to return to, so if he later asks for text there, don't lose the empty vers
 
 ## Content status
 
-`ideas/`, `bookshelf/`, `tech-stack/` and `links/` are structured but empty — see the
-`TODO(charlie)` comments in `pages/` for the markup pattern. `contact/` deliberately lists no
-email address pending Charlie's choice of a public one. Don't invent content for these pages;
-books, tools, links and opinions have to come from him.
+Every section page now has real content. `contact/` deliberately lists no email address —
+Charlie has decided against a public one; the links there are the way to reach him. Don't
+invent content for any of these pages; books, tools, links and opinions have to come from him.
 
-`blog/posts/sample-post.md` is a formatting demo, safe to delete.
+`blog/posts/sample-post.md` stays. It is the formatting demo and, for now, the only post, so it
+is what the blog index, the feed and the post layout are exercised against. Charlie asked for it
+back after a round of deleting it — don't delete it again until there is real writing to replace
+it.
+
+There are no `TODO(charlie)` comments left in `pages/`. `stripNotes()` in `scripts/build.js`
+still removes them from output, so the convention is available if he wants to leave a working
+note in a fragment — it just isn't in use.

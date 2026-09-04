@@ -6,3 +6,6 @@ node_modules/
 # source images kept locally; processed copies live in static/
 /charlie-headshot.jpg
 /moloqo-logo.jpeg
+
+# editor debug logs
+.cursor/
