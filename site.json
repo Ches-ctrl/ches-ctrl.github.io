@@ -27,6 +27,11 @@
       "page": "ideas"
     },
     {
+      "label": "Questions",
+      "path": "/questions/",
+      "page": "questions"
+    },
+    {
       "label": "Bookshelf",
       "path": "/bookshelf/",
       "page": "bookshelf"
