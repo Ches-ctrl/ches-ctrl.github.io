@@ -1,0 +1,628 @@
+# Charlie Cheesman
+
+> Charlie Cheesman is an AI deployment strategist in London. Five years at EY-Parthenon, where he set up the AI Lab and wrote the UK AI strategy.
+
+The full text of https://www.charliecheesman.net, the personal site of Charlie Cheesman.
+It is written in the first person, by him.
+
+## Facts
+
+- Job title: AI deployment strategist
+- Location: London, GB
+- Works for: Moloqo (https://moloqo.com), Unicorn Mafia (https://unicornmafia.ai)
+- Alumnus of: University of Oxford
+- Knows about: AI strategy, Enterprise AI rollout, AI governance, AI deployment, Context and data architecture
+- Elsewhere: https://www.linkedin.com/in/charliecheesman, https://x.com/charliecheesma1, https://github.com/Ches-ctrl
+
+## About
+
+Source: https://www.charliecheesman.net/about/
+
+About
+
+AI deployment strategist based in London.
+
+Before that: 5 years at EY-Parthenon advising Fortune 500 and FTSE 100 companies. Set up the
+EY-Parthenon AI Lab and wrote the UK AI strategy. Clients spanned F1, Formula E, US retail, and
+PE-backed tech.
+
+In August 2025: built, launched, and sold a company in 20 hours at a Stockholm hackathon - the
+fastest exit in Europe. That became the20hr.co.
+
+Also founder of Unicorn Mafia, a
+developer community of 1000+ engineers across the EU and US.
+
+Oxford Economics & Management following dropping out of Durham Engineering.
+
+On the web
+
+- Business InsiderConsulting - the race to become AI-native
+
+- ETN60x - the future of AI business models
+
+- Dagens Industrithe20hr.co - a company built and sold at Lovable's 20-hour hackathon
+
+- The TimesUnicorn Mafia - the power of communities to create companies
+
+- BNNUnicorn Mafia - a 16-year-old's journey from Latvia to London to SF
+
+- EdTech Innovation HubUnicorn Mafia - embodied AI hackathon sponsored by Anthropic
+
+## Work
+
+Source: https://www.charliecheesman.net/work/
+
+Work
+
+How I work with clients - typically private equity firms and large corporates.
+
+- AI strategy and roadmap
+
+- Enterprise rollout
+
+- Context and data architecture
+
+- Deployment and adoption
+
+- AI governance
+
+- Board and committee cover
+
+Typically engaged as a fractional AI strategist on retainer, or per project.
+
+More at moloqo.com.
+
+The best way to reach me is on
+LinkedIn.
+
+## Career
+
+Source: https://www.charliecheesman.net/career/
+
+Career
+
+An incomplete timeline of what I've worked on over the years.
+
+Jul 2026
+Present
+
+Moloqo
+
+London
+
+Aug 2025
+Jul 2026
+
+60x
+
+London
+
+Aug 2025
+
+the20hr.co
+
+acq. Revel &middot; Stockholm
+
+Nov 2024
+Present
+
+Unicorn Mafia
+
+London
+
+Sep 2024
+Apr 2025
+
+Cheddar
+
+London
+
+Sep 2021
+Feb 2026
+
+EY-Parthenon
+
+London
+
+Oct 2020
+Jul 2021
+
+Equiteq
+
+London
+
+May 2020
+Oct 2024
+
+Oxonian Ventures
+
+Los Altos, California
+
+Sep 2019
+Aug 2020
+
+HSBC
+
+New York
+
+Jul 2019
+Aug 2019
+
+Checkatrade
+
+Portsmouth
+
+May 2018
+Jun 2018
+
+Sa&iuml;d Business School
+
+University of Oxford
+
+Jun 2017
+Jun 2018
+
+The Oxford Union Society
+
+Oxford
+
+2016
+2019
+
+University of Oxford
+
+Economics & Management
+
+Aug 2016
+Sep 2016
+
+Mercer
+
+Chichester
+
+2015
+2016
+
+Durham University
+
+Engineering
+
+## Ideas
+
+Source: https://www.charliecheesman.net/ideas/
+
+Ideas
+
+A collection of ideas at various stages of development.
+
+- Net Zero from Day ZeroThere will come a day when all new companies will be Net Zero
+from the day they start. There should be a platform that enables this.
+
+- The Dual Rationality HypothesisThe
+Joint Hypothesis Problem can
+be generalised to any test for rationality. Any test for rationality requires a model of
+rationality to test against, meaning models of rationality can never fully be rejected.
+
+- IdeawareIdeas can be thought of as software for thinking. In the same way as you
+have a Tech
+Stack, you can have a Personal Idea Stack. Your idea stack is the collection of ideas you use
+to interpret the world.
+
+- Impact ArbitrageWhy doesn't charitable giving behave like investing? Because there
+is no impact arbitrage. There is (1) no absolute metric for impact and (2) no means to trade
+impact among givers. If there were, charity would look more like
+effective altruism. We could
+change this.
+
+- An AMC for Carbon TaxesWhy don't companies voluntarily commit to an AMC for carbon
+taxes? This would incentivise governments to introduce a carbon tax.
+
+- A Marketplace for AMCsAdvance Market Commitments
+will soon be privatised and apply to many markets. There should (and soon will) be a marketplace
+for AMCs.
+
+- Comparative Advantage for StartupsComparative Advantage explains
+why startups can outcompete incumbents. They have a lower opportunity cost to effort.
+
+- Confidence ExpectationsA variable for confidence is the missing link between
+Rational Expectations and
+Behavioural Economics.
+
+- Learning Efficiency in AI SystemsLearning efficiency as a measure of AI
+intelligence. How many repetitions of a game does it take for the AI system to become good,
+relative to a human?
+
+If some of these are interesting to you, reach out.
+
+## Questions
+
+Source: https://www.charliecheesman.net/questions/
+
+Questions
+
+Thoughts and questions I keep coming back to.
+
+- Intertemporal FairnessIn what sense is it 'fair' to be born in one time period vs
+another?
+
+- Intelligence as being General PurposeIntelligence is how general purpose something
+is.
+
+- The Cost of SignallingStereotyping is the cost of our reliance on
+signalling.
+
+- Branding DiseconomiesBrands suffer from
+diseconomies of scale.
+
+- The Market for NimbyismWhy don't we have a market for
+Nimbyism?
+
+- Meal DealsWhy are there no
+meal deals in other countries?
+
+- Memory PalacesWhy are we not all taught how to build
+memory palaces?
+
+If some of these are interesting to you, reach out.
+
+## Bookshelf
+
+Source: https://www.charliecheesman.net/bookshelf/
+
+Bookshelf
+
+An incomplete list of books I've loved and would recommend, inspired by Patrick Collison's
+list of the same.
+
+Founders and companies
+
+- The Accidental Billionaires - Ben Mezrich
+
+- Alibaba - Duncan Clark
+
+- Becoming Trader Joe - Joe Coulombe
+
+- Billion Dollar Loser - Reeves Wiedeman
+
+- Careless People - Sarah Wynn-Williams
+
+- The Cobbler
+
+- Elon Musk - Walter Isaacson
+
+- The Everything Store - Brad Stone
+
+- Facebook: The Inside Story - Steven Levy
+
+- The Founders - Jimmy Soni
+
+- Grinding It Out - Ray Kroc
+
+- How Google Works - Eric Schmidt & Jonathan Rosenberg
+
+- Idea Man - Paul Allen
+
+- In The Plex - Steven Levy
+
+- Insanely Simple - Ken Segall
+
+- The Inside Story of PayPal
+
+- Invention - James Dyson
+
+- Jony Ive - Leander Kahney
+
+- Let My People Go Surfing - Yvon Chouinard
+
+- Losing My Virginity - Richard Branson
+
+- Lululemon
+
+- Michael O&#x27;Leary
+
+- No Filter - Sarah Frier
+
+- No Rules Rules - Reed Hastings & Erin Meyer
+
+- Pour Your Heart Into It - Howard Schultz
+
+- Shoe Dog - Phil Knight
+
+- Shoemaker - Joe Foster
+
+- Steve Jobs: The Exclusive Biography - Walter Isaacson
+
+- Super Pumped - Mike Isaac
+
+- Supremacy - Parmy Olson
+
+- That Will Never Work - Marc Randolph
+
+- The Thinking Machine - Stephen Witt
+
+- Unreasonable Hospitality - Will Guidara
+
+- Who Is Michael Ovitz? - Michael Ovitz
+
+Startups and building
+
+- The Almanack of Naval Ravikant - Eric Jorgenson
+
+- Blitzscaling - Reid Hoffman
+
+- The Cold Start Problem - Andrew Chen
+
+- Crossing the Chasm - Geoffrey Moore
+
+- The Founder&#x27;s Dilemmas - Noam Wasserman
+
+- The Hard Thing About Hard Things - Ben Horowitz
+
+- The Lean Startup - Eric Ries
+
+- The Mom Test - Rob Fitzpatrick
+
+- Rework - Jason Fried & David Heinemeier Hansson
+
+- Shape Up - Ryan Singer
+
+- Speed & Scale - John Doerr
+
+- The Startup Owner&#x27;s Manual - Steve Blank & Bob Dorf
+
+- Zero to One - Peter Thiel
+
+Sales, growth and persuasion
+
+- $100M Leads - Alex Hormozi
+
+- Alchemy - Rory Sutherland
+
+- The Challenger Sale - Matthew Dixon & Brent Adamson
+
+- Fanatical Prospecting - Jeb Blount
+
+- Hacking Growth - Sean Ellis & Morgan Brown
+
+- Influence - Robert Cialdini
+
+- Never Split The Difference - Chris Voss
+
+Software and engineering
+
+- AI Engineering - Chip Huyen
+
+- Clean Architecture - Robert C. Martin
+
+- Clean Code - Robert C. Martin
+
+- Metaprogramming Ruby - Paolo Perrotta
+
+- Operating Systems: Three Easy Pieces - Remzi & Andrea Arpaci-Dusseau
+
+- The Pattern on the Stone - W. Daniel Hillis
+
+- The Phoenix Project - Gene Kim, Kevin Behr & George Spafford
+
+- Refactoring - Martin Fowler
+
+- Sustainable Rails - David Bryant Copeland
+
+- Sustainable Web Development with Ruby on Rails - David Bryant Copeland
+
+Design
+
+- The Design of Everyday Things - Don Norman
+
+- User Friendly - Cliff Kuang & Robert Fabricant
+
+Narrative non-fiction and memoir
+
+- American Kingpin - Nick Bilton
+
+- And Away... - Bob Mortimer
+
+- Going Infinite - Michael Lewis
+
+- Greenlights - Matthew McConaughey
+
+- How To Lose Friends And Alienate People - Toby Young
+
+- Levels of the Game - John McPhee
+
+- The Lunch That Killed a Critic
+
+- The Man Who Solved The Market - Gregory Zuckerman
+
+- Reentry - Eric Berger
+
+- This Is Going To Hurt - Adam Kay
+
+- Very Important People - Ashley Mears
+
+- When The Heavens Went On Sale - Ashlee Vance
+
+Thinking, habits and health
+
+- Advanced Memory Palaces
+
+- Atomic Habits - James Clear
+
+- Fluke - Brian Klaas
+
+- Four Thousand Weeks - Oliver Burkeman
+
+- How Not To Die - Michael Greger
+
+- How To Take Smart Notes - Sonke Ahrens
+
+- The Let Them Theory - Mel Robbins
+
+- Lightoff
+
+- Outlive - Peter Attia
+
+- Why Has Nobody Told Me This Before? - Julie Smith
+
+Fiction
+
+- The Adventures of Sherlock Holmes - Arthur Conan Doyle
+
+- Dune - Frank Herbert
+
+- A Good Year - Peter Mayle
+
+- Harry Potter and the Methods of Rationality - Eliezer Yudkowsky
+
+- The Hitchhiker&#x27;s Guide to the Galaxy - Douglas Adams
+
+- The Lord of the Rings - J.R.R. Tolkien
+
+- The Lords of the North - Bernard Cornwell
+
+- The Memoirs of Sherlock Holmes - Arthur Conan Doyle
+
+- The Murder of Roger Ackroyd - Agatha Christie
+
+- Sherlock Holmes - Arthur Conan Doyle
+
+- The Sign of Four - Arthur Conan Doyle
+
+- A Study in Scarlet - Arthur Conan Doyle
+
+- The Thursday Murder Club - Richard Osman
+
+## Tech stack
+
+Source: https://www.charliecheesman.net/tech-stack/
+
+Tech stack
+
+My favourite tooling.
+
+Work
+
+- Linear
+
+- Cursor
+
+- Claude
+
+- ChatGPT
+
+- Circleback
+
+- Notion
+
+- Folk
+
+- Stanley
+
+- Wispr Flow
+
+- Timing
+
+Personal
+
+- Todoist
+
+- Obsidian
+
+- ElevenReader
+
+- Shazam
+
+- Insight Timer
+
+- Hevy
+
+## Links
+
+Source: https://www.charliecheesman.net/links/
+
+Links
+
+Some of my favourite personal sites from across the web.
+
+- Patrick Collison
+
+- Paul Graham
+
+- Simon Willison
+
+- Andrej Karpathy
+
+- Naval Ravikant
+
+- Sam Altman
+
+- Ben Kuhn
+
+- Alexey Guzey
+
+- Marginal Revolution
+
+- Joel Spolsky
+
+- Steve Yegge
+
+- Dan Luu
+
+- Julia Evans
+
+- Fred Wilson
+
+- Andrew Chen
+
+- Jason Cohen
+
+- Gwern
+
+- Scott Alexander
+
+- Robin Hanson
+
+- Derek Sivers
+
+- Kevin Kelly
+
+- Bret Victor
+
+- Andy Matuschak
+
+- Dario Amodei
+
+- Terence Tao
+
+- Ryo Lu
+
+- Ryo Lu - baby cursor
+
+- sigilwen.ca
+
+- akoratana.com
+
+## Contact
+
+Source: https://www.charliecheesman.net/contact/
+
+Contact
+
+Best places to find me:
+
+- linkedin.com/in/charliecheesmanLinkedIn
+
+- x.com/charliecheesma1X
+
+- github.com/Ches-ctrlCode
+
+- moloqo.comWork
+
+- unicornmafia.aiDeveloper community
+
+## Blog post: print("Hello, World!")
+
+Source: https://www.charliecheesman.net/blog/sample-post/
+Published: 2026-09-02
+
+This is my blog.

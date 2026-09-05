@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { marked } = require('marked');
+const { buildCorpus } = require('./corpus.js');
 
 const ROOT = path.join(__dirname, '..');
 const SITE = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.json'), 'utf8'));
@@ -511,6 +512,20 @@ const postCount = buildBlog(posts);
 buildFeed(posts);
 const urlCount = buildSitemap(posts);
 
+// The site as plain text, for the voice agent's knowledge base — and for anything
+// else that would rather read prose than parse ten pages of HTML. Generated here so
+// it cannot drift from the site; pushed to the platform by `npm run agent:sync`,
+// which is deliberately a separate command because it needs a credential.
+const corpusPages = SITE.nav
+  .filter((n) => n.page)
+  .map((n) => ({
+    label: n.label,
+    path: n.path,
+    description: n.description,
+    html: stripNotes(read(`pages/${n.page}.html`)),
+  }));
+write('llms.txt', buildCorpus({ site: SITE, pages: corpusPages, posts }));
+
 console.log(
-  `${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}, feed.xml, sitemap.xml (${urlCount} urls), robots.txt`
+  `${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}, feed.xml, sitemap.xml (${urlCount} urls), robots.txt, llms.txt`
 );
