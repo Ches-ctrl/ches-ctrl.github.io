@@ -75,8 +75,16 @@ const platformSettings = {
   auth: { enable_auth: false },
   guardrails: {
     version: '1',
-    focus: { is_enabled: true },
-    prompt_injection: { is_enabled: true },
+    // ElevenLabs' own guardrails documentation shows these two enable flags in
+    // camelCase - isEnabled - inside an otherwise snake_case body, on multiple
+    // fetches of the same page. Unknown fields are ignored rather than rejected,
+    // so if is_enabled turns out to be wrong the request still succeeds and the
+    // guardrail is just silently off. Sending both costs nothing; a public agent
+    // carrying Charlie's name with prompt-injection protection silently disabled
+    // is the worse failure by a wide margin. Drop the redundant key once this is
+    // confirmed against a real response.
+    focus: { is_enabled: true, isEnabled: true },
+    prompt_injection: { is_enabled: true, isEnabled: true },
     custom: {
       config: {
         configs: [
@@ -124,6 +132,21 @@ async function main() {
     console.log(`\ncreated agent ${created.agent_id}`);
     console.log(`put that in site.json under "agent": { "id": ... } and rebuild.`);
   }
+
+  // Every run uploads a fresh knowledge base document rather than editing the last
+  // one, and nothing here deletes the old one - a script with delete access to
+  // someone's paid account is a worse failure mode than an inert leftover file, and
+  // the agent already points at the newest id regardless. Surfacing it is the only
+  // honest middle ground: say what happened and where to clean up by hand.
+  console.log(`\nthis created a new knowledge base document; earlier ones are no longer used by`);
+  console.log(`this agent but are not deleted - remove them yourself in the dashboard's`);
+  console.log(`knowledge base view if you want to.`);
+
+  // This code has not run against the real API yet, and the isEnabled hedge above
+  // exists precisely because that gap can't be closed from here - so the one check
+  // that matters most has to happen the moment a human is next looking at the agent.
+  console.log(`\nbefore trusting this agent with visitors, open it in the dashboard and confirm`);
+  console.log(`focus and prompt injection guardrails both show as enabled.`);
 }
 
 main().catch((e) => {
