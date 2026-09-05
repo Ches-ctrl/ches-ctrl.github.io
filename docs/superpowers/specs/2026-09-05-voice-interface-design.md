@@ -81,7 +81,8 @@ and the corpus changes far less often than the site does.
 
 ### How the connection is made
 
-The client transport is decided by a spike, before anything else is built.
+The client transport was decided by a spike, before anything else was built. Three
+rungs were considered:
 
 | | Cost | Assessment |
 |---|---|---|
