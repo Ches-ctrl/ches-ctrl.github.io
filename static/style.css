@@ -205,21 +205,30 @@ img { max-width: 100%; height: auto; }
 }
 
 /* ---- ask ---- */
-/* The waveform is a second instance of the accent line, in the content column where
-   the interaction is. The one in the sidebar is left exactly as it is on every page. */
 
 #ask-start { margin-top: 1.6em; }
 
+/* The accent line again, in the content column, where the interaction is. At rest
+   the 24 bars are packed into 64px at 2px tall - the same mark as .accent above the
+   name. `spread` in voice.js eases them apart into the waveform and back. */
+
 #ask-wave {
-  height: 18px;              /* one line-height, so it sits in the flow */
+  height: 18px;
   margin: 1.6em 0 0;
-  display: none;
+  display: block;
 }
 
-#ask-wave.on { display: block; }
 #ask-wave svg { display: block; width: 100%; height: 18px; }
-#ask-wave rect { fill: #333; }
-#ask-wave.speaking rect { fill: var(--accent); }
+
+#ask-wave rect {
+  fill: var(--accent);
+  transition: fill 120ms ease-out;
+}
+
+/* Listening is the visitor's own voice, so it takes the colour of body copy.
+   Speaking is the site's, so it takes the site's accent. No label needed. */
+#ask-wave.on rect { fill: #333; }
+#ask-wave.on.speaking rect { fill: var(--accent); }
 
 .ask-turn { margin-top: 1.2em; }
 .ask-turn .who { display: block; font-size: 10px; color: #aaa; }

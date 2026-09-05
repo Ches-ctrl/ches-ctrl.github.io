@@ -409,6 +409,7 @@
     if (el.wave) {
       el.wave.classList.toggle('on', next === 'listening' || next === 'speaking' || next === 'connecting');
       el.wave.classList.toggle('speaking', next === 'speaking');
+      animate(next === 'listening' || next === 'speaking' || next === 'connecting');
     }
     if (el.error && next !== 'error') el.error.hidden = true;
   }
@@ -435,6 +436,96 @@
     if (!el.error) return;
     el.error.textContent = message;
     el.error.hidden = false;
+  }
+
+  // ---------------------------------------------------------------- the line
+
+  var BARS = 24, W = 2, H = 18, MID = H / 2, IDLE_W = 64;
+  var SVG_NS = 'http://www.w3.org/2000/svg';
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var rects = [];
+  var heights = new Array(BARS).fill(2);   // eased, never set from amplitude directly
+  var spread = 0;                          // 0 = the accent line, 1 = the waveform
+  var spreadTarget = 0;
+  var raf = null;
+
+  function buildWave() {
+    if (!el.wave || rects.length) return;
+    var svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.setAttribute('viewBox', '0 0 ' + IDLE_W + ' ' + H);
+    for (var i = 0; i < BARS; i++) {
+      var r = document.createElementNS(SVG_NS, 'rect');
+      r.setAttribute('rx', 1);
+      svg.appendChild(r);
+      rects.push(r);
+    }
+    el.wave.appendChild(svg);
+    el.wave.__svg = svg;
+  }
+
+  /**
+   * Amplitude drives a target, never a bar. Each bar eases toward its target at a
+   * fixed rate, which is the whole difference between a waveform that reads as
+   * liquid and one that reads as a twitch.
+   */
+  function frame() {
+    raf = requestAnimationFrame(frame);
+    var svg = el.wave && el.wave.__svg;
+    if (!svg) return;
+
+    spread += (spreadTarget - spread) * 0.12;
+
+    var full = el.wave.clientWidth || 500;
+    var width = IDLE_W + (full - IDLE_W) * spread;
+    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + H);
+
+    var a = window.__ask.analysers();
+    var node = state === 'speaking' ? a.output : a.input;
+    var bins = null;
+    if (node && !reduced) {
+      bins = new Uint8Array(node.frequencyBinCount);
+      node.getByteFrequencyData(bins);
+    }
+
+    var gap = 3 * spread;
+    var barW = (width - gap * (BARS - 1)) / BARS;
+    var t = performance.now() / 1000;
+
+    for (var i = 0; i < BARS; i++) {
+      var target = 2;
+      if (bins) {
+        // Log-ish mapping: speech energy is bunched into the low bins, so a linear
+        // slice would leave the right-hand two-thirds of the bars dead.
+        var bin = Math.floor(Math.pow(i / BARS, 1.7) * (bins.length * 0.7));
+        target = 2 + (bins[bin] / 255) * (H - 2);
+      } else if (!reduced) {
+        target = 2 + Math.sin(t * 1.6 + i * 0.4) + 1;   // idle breathing, never flat
+      }
+      target = 2 + (target - 2) * spread;
+      heights[i] += (target - heights[i]) * (reduced ? 1 : 0.25);
+
+      var h = Math.max(2, heights[i]);
+      var r = rects[i];
+      r.setAttribute('x', (barW + gap) * i);
+      r.setAttribute('width', Math.max(0.5, barW));
+      r.setAttribute('y', MID - h / 2);
+      r.setAttribute('height', h);
+    }
+
+    // Settled back to the accent line with nothing running: stop burning frames.
+    if (spreadTarget === 0 && spread < 0.01) {
+      cancelAnimationFrame(raf);
+      raf = null;
+      svg.setAttribute('viewBox', '0 0 ' + IDLE_W + ' ' + H);
+    }
+  }
+
+  function animate(on) {
+    buildWave();
+    spreadTarget = on ? 1 : 0;
+    if (!raf) raf = requestAnimationFrame(frame);
   }
 
   window.__ask = {
