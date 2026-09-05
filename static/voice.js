@@ -146,6 +146,7 @@
   var sources = [];      // scheduled AudioBufferSourceNodes, so they can be cut
   var cursor = 0;        // when the next chunk should start, in context time
   var outRate = 16000;   // replaced by the negotiated rate
+  var drainTimer = null; // debounces speaking -> listening across a network stall
 
   function ensureOutput() {
     if (out) return out;
@@ -165,6 +166,10 @@
    * behind absorbs a late chunk without a click.
    */
   function play(base64) {
+    // A new chunk means the queue was never really empty - cancel any pending
+    // drain from a previous gap so it cannot fire mid-utterance.
+    if (drainTimer) { clearTimeout(drainTimer); drainTimer = null; }
+
     var f32 = unb64(base64);
     var buf = ctx.createBuffer(1, f32.length, outRate);
     buf.getChannelData(0).set(f32);
@@ -179,13 +184,24 @@
     src.onended = function () {
       var i = sources.indexOf(src);
       if (i > -1) sources.splice(i, 1);
-      if (!sources.length) setState('listening');
+      // The queue draining to empty isn't proof the turn is over - a network
+      // stall between chunks looks identical. Wait a beat, and only flip state
+      // if it's still empty afterward, so a fresh chunk arriving in the gap
+      // (see the clearTimeout above) wins over a premature 'listening'.
+      if (!sources.length) {
+        if (drainTimer) clearTimeout(drainTimer);
+        drainTimer = setTimeout(function () {
+          drainTimer = null;
+          if (!sources.length && state === 'speaking') setState('listening');
+        }, 150);
+      }
     };
     setState('speaking');
   }
 
   /** Cut everything queued. The server sends `interruption` the moment the user talks over it. */
   function flush() {
+    if (drainTimer) { clearTimeout(drainTimer); drainTimer = null; }
     sources.forEach(function (s) { try { s.onended = null; s.stop(); } catch (e) {} });
     sources = [];
     cursor = 0;
@@ -229,45 +245,82 @@
       var msg;
       try { msg = JSON.parse(event.data); } catch (e) { return; }
 
-      switch (msg.type) {
-        case 'conversation_initiation_metadata': {
-          var meta = msg.conversation_initiation_metadata_event || {};
-          outRate = rateOf(meta.agent_output_audio_format, 16000);
-          var inRate = rateOf(meta.user_input_audio_format, 16000);
-          ensureOutput();
-          mic = await openMic({
-            rate: inRate,
-            onChunk: function (chunk) {
-              if (ws && ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ user_audio_chunk: chunk }));
-              }
-            },
-          });
-          setState('listening');
-          break;
+      // The pong is what keeps the connection alive, so it goes out before
+      // anything below that could throw - a malformed ping frame must still be
+      // answered, not just a well-formed one. Handled outside the try/catch
+      // below on purpose: nothing gets a chance to pre-empt it.
+      if (msg.type === 'ping') {
+        var pingId = msg.ping_event && msg.ping_event.event_id;
+        ws.send(JSON.stringify({ type: 'pong', event_id: pingId }));
+        return;
+      }
+
+      // One malformed frame should not take down the handler for every frame
+      // after it. Logged rather than silently swallowed, so a real bug still
+      // surfaces - just without costing the connection.
+      try {
+        switch (msg.type) {
+          case 'conversation_initiation_metadata': {
+            var meta = msg.conversation_initiation_metadata_event || {};
+            var outFormat = meta.agent_output_audio_format || '';
+            var inFormat = meta.user_input_audio_format || '';
+
+            // Anything other than pcm_* is a real agent misconfiguration, not
+            // missing data - proceeding would silently feed mu-law bytes through
+            // the PCM path and come out as noise, with nothing in the console to
+            // say why. Refusing loudly here means the failure is "check the
+            // agent's audio format in the ElevenLabs dashboard", not a bug report
+            // about garbled audio.
+            if (!/^pcm_/.test(outFormat) || !/^pcm_/.test(inFormat)) {
+              console.error(
+                'voice.js: agent is not configured for PCM audio (output=' + outFormat +
+                ', input=' + inFormat + ') - set both to a pcm_* format in the ElevenLabs dashboard'
+              );
+              setState('error');
+              if (ws) { try { ws.close(); } catch (e) {} }
+              break;
+            }
+
+            outRate = rateOf(outFormat, 16000);
+            var inRate = rateOf(inFormat, 16000);
+            ensureOutput();
+            mic = await openMic({
+              rate: inRate,
+              onChunk: function (chunk) {
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                  ws.send(JSON.stringify({ user_audio_chunk: chunk }));
+                }
+              },
+            });
+            setState('listening');
+            break;
+          }
+
+          case 'audio': {
+            var audio = msg.audio_event || {};
+            if (audio.audio_base_64) play(audio.audio_base_64);
+            break;
+          }
+
+          case 'interruption':
+            flush();
+            setState('listening');
+            break;
+
+          case 'user_transcript': {
+            var userText = (msg.user_transcription_event || {}).user_transcript;
+            if (userText) emitTurn('You', userText);
+            break;
+          }
+
+          case 'agent_response': {
+            var agentText = (msg.agent_response_event || {}).agent_response;
+            if (agentText) emitTurn('This site', agentText);
+            break;
+          }
         }
-
-        case 'audio':
-          play(msg.audio_event.audio_base_64);
-          break;
-
-        case 'interruption':
-          flush();
-          setState('listening');
-          break;
-
-        // A missed pong drops the connection, so this is not optional.
-        case 'ping':
-          ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event.event_id }));
-          break;
-
-        case 'user_transcript':
-          emitTurn('You', msg.user_transcription_event.user_transcript);
-          break;
-
-        case 'agent_response':
-          emitTurn('This site', msg.agent_response_event.agent_response);
-          break;
+      } catch (e) {
+        console.error('voice.js: failed to handle message', msg && msg.type, e);
       }
     };
 
