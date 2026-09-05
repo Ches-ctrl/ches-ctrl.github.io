@@ -89,15 +89,55 @@ The client transport is decided by a spike, before anything else is built.
 | `@elevenlabs/client`, bundled and self-hosted | esbuild at build time, committed to `/static/` | Full custom UI. Exposes `getOutputByteFrequencyData()` and `getInputVolume()` — precisely the two signals the animation needs. Risk: the package pulls in `livekit-client` for its WebRTC transport, which is large, and forcing `connectionType: "websocket"` may not tree-shake it out. |
 | Raw WebSocket, hand-written | ~250 lines, no dependencies, ~5KB | `getUserMedia` → AudioWorklet → downsample to PCM16 at 16kHz → base64 → `user_audio_chunk`. Server returns base64 PCM `audio` events; queue and play them; flush the queue on `interruption`; answer `ping` with `pong`. |
 
-**The rule: bundle the SDK websocket-only, measure it gzipped. Under 40KB, ship it.
-Over 40KB, hand-roll the WebSocket.** The number is chosen so the whole feature stays
-smaller than a single photograph, and so a decision that is really about taste gets
-made against evidence instead.
+**The rule was: bundle the SDK websocket-only, measure it gzipped. Under 40KB, ship
+it. Over 40KB, hand-roll the WebSocket.** The threshold was chosen so the whole feature
+stays smaller than a single photograph, and so a decision that is really about taste
+gets made against evidence instead.
 
-The hand-written path is not a hardship if it comes to that. It hands you the raw PCM
-for both directions, which makes the animation easier rather than harder — one
-`AnalyserNode` per stream, no SDK abstraction in between — and it is the option most
-in keeping with a site that is otherwise entirely hand-built.
+**Measured, 5 September 2026: 160KB gzipped. The SDK is out; the client is
+hand-written.**
+
+`@elevenlabs/client` 1.24.0 declares `livekit-client` as a hard dependency and imports
+it statically from `WebRTCConnection.js`, which the package's single entry point
+reaches. esbuild therefore cannot drop it, and `package.json` exposes no websocket-only
+subpath — only `.`, `./internal`, `./internal/unity` and `./worklets/*`. Reaching past
+those into `dist/utils/WebSocketConnection.js` by hand would work today and break on any
+minor release, which is a worse dependency than none.
+
+160KB gzipped is roughly four times the weight of every other page on this site put
+together. It is not a close call, and the margin is wide enough that a future release
+would have to change the SDK's architecture, not merely trim it, to reopen the question.
+
+The hand-written path is not a hardship. It hands you the raw PCM for both directions,
+which makes the animation easier rather than harder — one `AnalyserNode` per stream,
+with no SDK abstraction in between — and it is the option most in keeping with a site
+that is otherwise entirely hand-built.
+
+### The wire protocol
+
+Confirmed against the ElevenLabs AsyncAPI reference, so the client is written against
+exact shapes rather than a guess.
+
+The client sends `{"user_audio_chunk": "<base64>"}` for microphone audio, and answers
+every `ping` with `{"type": "pong", "event_id": <n>}`. A missed pong drops the
+connection, so it is not optional.
+
+The server sends, each in its own envelope:
+
+| Event | Payload |
+|---|---|
+| `conversation_initiation_metadata` | `conversation_initiation_metadata_event.{conversation_id, agent_output_audio_format, user_input_audio_format}` |
+| `user_transcript` | `user_transcription_event.user_transcript` |
+| `agent_response` | `agent_response_event.agent_response` |
+| `audio` | `audio_event.{audio_base_64, event_id, is_final}` |
+| `interruption` | `interruption_event.event_id` |
+| `ping` | `ping_event.{event_id, ping_ms}` |
+
+The audio formats are **negotiated, not assumed**: the metadata event names them as
+`pcm_<rate>`, so the client parses the rate out of that string and configures its
+resampler and its playback buffer from what the server actually said. Hardcoding 16kHz
+would work until the agent's output format was changed in the dashboard, and would then
+fail as garbled audio rather than as an error.
 
 ### How the agent knows about Charlie
 
@@ -201,8 +241,8 @@ for him, and it will sound entirely plausible.
 **Phase 2 lands before any pixels.** If the answers are bad the animation is worthless,
 and answer quality is completely testable before a single pixel exists.
 
-1. **Spike** — bundle the SDK websocket-only, measure gzipped, apply the 40KB rule.
-   Roughly thirty minutes. Output is a decision, not code.
+1. ~~**Spike** — bundle the SDK websocket-only, measure gzipped, apply the 40KB
+   rule.~~ **Done, 5 September 2026: 160KB gzipped, so the client is hand-written.**
 2. **The agent** — create it, write `agent/prompt.md`, build the corpus and the sync
    script, then test it in the ElevenLabs dashboard with no interface whatsoever.
 3. **Page shell** — `/ask/`, the nav entry, the description, the fallback list, the
@@ -213,17 +253,27 @@ and answer quality is completely testable before a single pixel exists.
 
 ## Testing
 
-There is no test runner in this repository and this design does not invent one for a
-single feature.
+Verification is tiered, because the three parts of this feature fail in completely
+different ways and only one of them is testable the usual way.
 
-What is real and automated: ElevenLabs' own agent tests, using their `llm` and
-`simulation` types, covering answer quality and refusal behaviour. That is the part
-that actually matters and it runs server-side.
+**Build-script logic — automated, `node --test`.** `buildCorpus()` is ordinary pure
+function work: given pages and posts, produce text. Node's built-in test runner needs
+no installation and adds no dependency, so it costs nothing, and it is not the
+jest-or-vitest install that `CLAUDE.md` is right to have avoided. This is a narrow,
+deliberate addition — `node --test scripts/` covers the build, and nothing else.
 
-The front end is verified by hand, against a fixed list: Chrome, Safari, iOS Safari,
-microphone denied, connection dropped mid-turn, `prefers-reduced-motion`, and
-JavaScript off. iOS Safari requires audio to begin inside the click handler, so it is
-a constraint on the interaction design rather than a browser to check at the end.
+**Answer quality — automated, on the platform.** ElevenLabs' own agent tests, using
+their `llm` and `simulation` types, cover what the agent says and, more importantly,
+what it refuses to say. That is the part that actually matters, and it runs server-side
+without any of it landing in this repository.
+
+**The browser client and the animation — manual, against a fixed list.** Testing real
+microphone capture and Web Audio playback would mean jsdom, a headless browser and a
+synthetic media stream: a large amount of infrastructure to assert things a person can
+check in a minute. The list is Chrome, Safari, iOS Safari, microphone denied,
+connection dropped mid-turn, interruption mid-sentence, `prefers-reduced-motion`, and
+JavaScript off. iOS Safari requires audio to begin inside the click handler, so it
+constrains the interaction design rather than being a browser to check at the end.
 
 ## Risks
 
