@@ -8,6 +8,38 @@
  */
 
 /**
+ * Named HTML entities the site's markdown and hand-written fragments actually produce
+ * - accented names (Saïd, Crème), punctuation (·, –, —, …, curly quotes) and the ASCII
+ * entities markdown escapes by habit. Deliberately excludes `amp`: that one is decoded
+ * separately, and last - see the ordering note on `toText` below. An entity outside
+ * this list is left exactly as written rather than guessed at.
+ */
+const NAMED_ENTITIES = {
+  nbsp: ' ',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  middot: '·',
+  iuml: 'ï',
+  eacute: 'é',
+  egrave: 'è',
+  agrave: 'à',
+  uuml: 'ü',
+  ouml: 'ö',
+  auml: 'ä',
+  ccedil: 'ç',
+  ntilde: 'ñ',
+  ndash: '–',
+  mdash: '—',
+  hellip: '…',
+  rsquo: '’',
+  lsquo: '‘',
+  ldquo: '“',
+  rdquo: '”',
+};
+
+/**
  * An HTML fragment as readable prose. Block tags become line breaks; list items keep
  * their bullet.
  *
@@ -17,6 +49,15 @@
  * "Business InsiderConsulting" instead of two. It only inserts a space where two tags
  * are adjacent, so it never touches real prose; the whitespace-collapsing passes below
  * absorb the extra space anywhere it isn't needed.
+ *
+ * Entity decoding happens after tags are stripped, not before - decoding first would
+ * let a literal "&lt;p&gt;" turn into a real tag and get stripped along with the rest.
+ * Within the decode itself, numeric entities go first and `&amp;` goes last: a source
+ * that contains the literal six characters "&amp;#x27;" means the text "&#x27;", not
+ * an apostrophe. Decoding `&amp;` before the numeric pass would unescape it to
+ * "&#x27;" and then that would decode again to "'" - silently turning quoted-out
+ * markup into real punctuation. Numeric-first, amp-last means it only ever unescapes
+ * once.
  */
 function toText(html) {
   return String(html)
@@ -26,11 +67,9 @@ function toText(html) {
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|h1|h2|h3|h4|li|div|article|blockquote|tr)>/gi, '\n')
     .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+    .replace(/&([a-zA-Z]+);/g, (whole, name) => NAMED_ENTITIES[name] || whole)
     .replace(/&amp;/g, '&')
     .replace(/[ \t]+/g, ' ')
     .replace(/ *\n */g, '\n')

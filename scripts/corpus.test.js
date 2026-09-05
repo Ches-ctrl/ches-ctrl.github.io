@@ -42,6 +42,23 @@ test('toText separates adjacent inline elements', () => {
   );
 });
 
+test('toText decodes numeric entities in both forms', () => {
+  assert.equal(toText('<p>Michael O&#x27;Leary and O&#39;Brien</p>'), "Michael O'Leary and O'Brien");
+});
+
+test('toText decodes the named entities the site actually uses', () => {
+  assert.equal(toText('<p>Sa&iuml;d &middot; Cr&egrave;me</p>'), 'Saïd · Crème');
+});
+
+test('toText leaves no entity residue', () => {
+  var out = toText('<p>&iuml; &#x27; &#39; &middot; &amp; &nbsp; &hellip;</p>');
+  assert.equal(/&[a-zA-Z]+;|&#x?[0-9a-fA-F]+;/.test(out), false, 'undecoded entity in: ' + out);
+});
+
+test('toText does not decode an escaped ampersand into its following entity', () => {
+  assert.equal(toText('<p>write &amp;#x27; for an apostrophe</p>'), "write &#x27; for an apostrophe");
+});
+
 test('buildCorpus opens with the name, the description and the facts', () => {
   const out = buildCorpus({ site: SITE, pages: [], posts: [] });
   assert.match(out, /^# Charlie Cheesman\n/);
