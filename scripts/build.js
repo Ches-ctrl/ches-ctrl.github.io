@@ -54,7 +54,7 @@ function write(relPath, html) {
  * it, so the no-JavaScript rule still holds and nothing is added to the critical
  * path. It is emitted only where it earns its place - the home page and posts.
  */
-function shell({ title, description, currentPath, url, body, source = 'pages/', ogType = 'website', jsonLd = null, noindex = false, nameHeading = false }) {
+function shell({ title, description, currentPath, url, body, source = 'pages/', ogType = 'website', jsonLd = null, noindex = false, nameHeading = false, voice = false }) {
   const nav = SITE.nav
     .map((n) => {
       const current = n.path === currentPath ? ' class="current"' : '';
@@ -98,6 +98,31 @@ gtag('config', '${SITE.analytics}');
 </script>`
     : '';
 
+  // The voice interface, on /ask/ and nowhere else. This stub is the entire idle
+  // cost of the feature: it feature-detects, reveals the control, and on click
+  // fetches static/voice.js. Nothing else is requested until someone asks for it,
+  // which is the form the site's first-paint rule takes here - see CLAUDE.md.
+  const stub = voice && SITE.agent && SITE.agent.id
+    ? `
+<script>
+(function(){
+  var p=document.getElementById('ask-start');
+  if(!p||!window.WebSocket||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return;
+  if(!(window.AudioContext||window.webkitAudioContext)) return;
+  window.__askConfig={agentId:'${SITE.agent.id}',wsUrl:'${SITE.agent.wsUrl}'};
+  p.hidden=false;
+  p.firstElementChild.addEventListener('click',function(e){
+    e.preventDefault();
+    if(window.__ask) return window.__ask.start();
+    var s=document.createElement('script');
+    s.src='/static/voice.js';
+    s.onload=function(){window.__ask.start()};
+    document.head.appendChild(s);
+  });
+})();
+</script>`
+    : '';
+
   return `<!-- GENERATED FILE - DO NOT EDIT.
      Your changes here are overwritten by the next \`npm run build\`.
      Edit the source instead: ${esc(source)} -->
@@ -136,6 +161,7 @@ ${nav}
 ${body}
   </main>
 </div>
+${stub}
 </body>
 </html>
 `;
@@ -275,6 +301,7 @@ function buildPages() {
           url: n.path,
           body: stripNotes(externalLinks(inlineLogos(read(`pages/${n.page}.html`).trimEnd()))),
           source: `pages/${n.page}.html`,
+          voice: n.page === 'ask',
         })
       );
     });

@@ -44,6 +44,10 @@
     "Context and data architecture"
   ],
   "analytics": "G-D0NCSC5M6V",
+  "agent": {
+    "id": "",
+    "wsUrl": "wss://api.elevenlabs.io/v1/convai/conversation"
+  },
   "nav": [
     {
       "label": "About",
@@ -97,6 +101,12 @@
       "path": "/links/",
       "page": "links",
       "description": "Favourite personal sites from across the web - Patrick Collison, Paul Graham, Simon Willison, Dan Luu and more."
+    },
+    {
+      "label": "Ask",
+      "path": "/ask/",
+      "page": "ask",
+      "description": "Ask this site questions out loud. It answers from what is actually written here, and says so plainly when something is not."
     },
     {
       "label": "Contact",
