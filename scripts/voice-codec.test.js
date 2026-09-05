@@ -8,9 +8,11 @@
  * static/voice.js is loaded with node:vm rather than require()d, because it is a
  * browser IIFE that assigns to `window`, not a CommonJS module. The context below
  * is deliberately minimal: at load time the file reads `window.__askConfig`,
- * registers a `pagehide` listener and assigns `window.__ask`, so that plus
- * btoa/atob is everything it touches before start() is ever called - hence the
- * no-op addEventListener rather than a real event target.
+ * looks up the four `ask-*` page elements (a null `getElementById` stub, since
+ * none of them exist here - the `el.foo &&` guards in voice.js are exactly what
+ * makes that safe), registers a `pagehide` listener and assigns `window.__ask`,
+ * so that plus btoa/atob is everything it touches before start() is ever called
+ * - hence the no-op addEventListener rather than a real event target.
  */
 const test = require('node:test');
 const assert = require('node:assert');
@@ -21,7 +23,8 @@ const vm = require('vm');
 function loadVoice() {
   const src = fs.readFileSync(path.join(__dirname, '..', 'static', 'voice.js'), 'utf8');
   const window = { __askConfig: {}, addEventListener: function () {} };
-  const context = { window: window, console: console, btoa: btoa, atob: atob };
+  const document = { getElementById: function () { return null; } };
+  const context = { window: window, document: document, console: console, btoa: btoa, atob: atob };
   vm.createContext(context);
   vm.runInContext(src, context, { filename: 'static/voice.js' });
   return window.__ask.__codec;

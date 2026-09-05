@@ -94,23 +94,32 @@
       audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true },
     });
 
-    var url = URL.createObjectURL(new Blob([WORKLET], { type: 'application/javascript' }));
-    await ctx.audioWorklet.addModule(url);
-    URL.revokeObjectURL(url);
+    // Everything below can throw (a locked-down browser can refuse the worklet
+    // module, for instance). getUserMedia has already lit the mic indicator by
+    // this point, so any failure from here on must stop the stream's tracks
+    // before re-throwing - otherwise the indicator stays lit with nothing using it.
+    try {
+      var url = URL.createObjectURL(new Blob([WORKLET], { type: 'application/javascript' }));
+      await ctx.audioWorklet.addModule(url);
+      URL.revokeObjectURL(url);
 
-    var source = ctx.createMediaStreamSource(stream);
-    var node = new AudioWorkletNode(ctx, 'cap');
-    var analyser = ctx.createAnalyser();
-    analyser.fftSize = 128;
-    analyser.smoothingTimeConstant = 0.6;
+      var source = ctx.createMediaStreamSource(stream);
+      var node = new AudioWorkletNode(ctx, 'cap');
+      var analyser = ctx.createAnalyser();
+      analyser.fftSize = 128;
+      analyser.smoothingTimeConstant = 0.6;
 
-    source.connect(analyser);
-    source.connect(node);
-    // The worklet returns nothing, but Chrome will not pull from a node with no
-    // destination, so it is connected to a muted gain rather than left dangling.
-    var sink = ctx.createGain();
-    sink.gain.value = 0;
-    node.connect(sink).connect(ctx.destination);
+      source.connect(analyser);
+      source.connect(node);
+      // The worklet returns nothing, but Chrome will not pull from a node with no
+      // destination, so it is connected to a muted gain rather than left dangling.
+      var sink = ctx.createGain();
+      sink.gain.value = 0;
+      node.connect(sink).connect(ctx.destination);
+    } catch (err) {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      throw err;
+    }
 
     var target = Math.round(opts.rate / 4);
     var pending = [];
@@ -284,14 +293,22 @@
             outRate = rateOf(outFormat, 16000);
             var inRate = rateOf(inFormat, 16000);
             ensureOutput();
-            mic = await openMic({
-              rate: inRate,
-              onChunk: function (chunk) {
+            try {
+              mic = await openMic({ rate: inRate, onChunk: function (chunk) {
                 if (ws && ws.readyState === WebSocket.OPEN) {
                   ws.send(JSON.stringify({ user_audio_chunk: chunk }));
                 }
-              },
-            });
+              } });
+            } catch (err) {
+              showError(
+                err && err.name === 'NotAllowedError'
+                  ? 'No microphone access, so there is nothing to listen to. The questions above are the same ones I would have answered.'
+                  : 'That microphone would not open. The questions above are the same ones I would have answered.'
+              );
+              setState('error');
+              if (ws) { try { ws.close(); } catch (e) {} ws = null; }
+              return;
+            }
             setState('listening');
             break;
           }
@@ -324,7 +341,10 @@
       }
     };
 
-    ws.onerror = function () { setState('error'); };
+    ws.onerror = function () {
+      showError('That connection dropped. Try again in a moment.');
+      setState('error');
+    };
     ws.onclose = function () { if (state !== 'error') setState('ended'); };
   }
 
@@ -341,9 +361,63 @@
     return ctx;
   }
 
+  // ---------------------------------------------------------------- the page
+
+  var el = {
+    start: document.getElementById('ask-start'),
+    wave: document.getElementById('ask-wave'),
+    transcript: document.getElementById('ask-transcript'),
+    error: document.getElementById('ask-error'),
+  };
+
+  var LABEL = {
+    idle: 'Ask a question →',
+    connecting: 'Connecting…',
+    listening: 'Stop',
+    speaking: 'Stop',
+    ended: 'Ask another question →',
+    error: 'Try again →',
+  };
+
+  function renderState(next) {
+    if (el.start && el.start.firstElementChild) el.start.firstElementChild.textContent = LABEL[next] || LABEL.idle;
+    if (el.wave) {
+      el.wave.classList.toggle('on', next === 'listening' || next === 'speaking' || next === 'connecting');
+      el.wave.classList.toggle('speaking', next === 'speaking');
+    }
+    if (el.error && next !== 'error') el.error.hidden = true;
+  }
+
+  /**
+   * One turn per speaker change. The agent's text arrives as one message per
+   * response, so a turn is never rewritten - it is appended and left alone.
+   */
+  function renderTurn(who, text) {
+    if (!el.transcript || !text) return;
+    var div = document.createElement('div');
+    div.className = 'ask-turn';
+    var label = document.createElement('span');
+    label.className = 'who';
+    label.textContent = who;
+    var p = document.createElement('p');
+    p.textContent = text;      // textContent, not innerHTML - this is untrusted output
+    div.appendChild(label);
+    div.appendChild(p);
+    el.transcript.appendChild(div);
+  }
+
+  function showError(message) {
+    if (!el.error) return;
+    el.error.textContent = message;
+    el.error.hidden = false;
+  }
+
   window.__ask = {
     start: function () {
-      if (state !== 'idle' && state !== 'ended' && state !== 'error') return;
+      if (state === 'listening' || state === 'speaking' || state === 'connecting') {
+        return window.__ask.stop();
+      }
+      if (el.transcript && (state === 'ended' || state === 'error')) el.transcript.innerHTML = '';
       ensureContext();      // synchronous, before any await - iOS
       ensureOutput();
       connect();
@@ -367,6 +441,9 @@
     // from outside the closure.
     __codec: { downsample: downsample, pcm16: pcm16, b64: b64, unb64: unb64, rateOf: rateOf },
   };
+
+  window.__ask.onState(renderState);
+  window.__ask.onTurn(renderTurn);
 
   // Free the microphone if the page is left mid-conversation.
   window.addEventListener('pagehide', function () { window.__ask.stop(); });
