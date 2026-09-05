@@ -59,6 +59,29 @@ test('toText does not decode an escaped ampersand into its following entity', ()
   assert.equal(toText('<p>write &amp;#x27; for an apostrophe</p>'), "write &#x27; for an apostrophe");
 });
 
+test('toText leaves an out-of-range numeric entity as text rather than throwing', () => {
+  assert.equal(toText('<p>a &#99999999; b</p>'), 'a &#99999999; b');
+  assert.equal(toText('<p>a &#xFFFFFFFF; b</p>'), 'a &#xFFFFFFFF; b');
+});
+
+test('toText does not decode control characters into the corpus', () => {
+  assert.equal(toText('<p>a &#0; b</p>'), 'a &#0; b');
+  assert.equal(toText('<p>a &#127; b</p>'), 'a &#127; b');
+});
+
+test('toText still decodes ordinary and astral code points', () => {
+  assert.equal(toText('<p>&#233; &#x1F600;</p>'), 'é 😀');
+});
+
+test('buildCorpus survives a malformed entity in a post', () => {
+  var out = buildCorpus({
+    site: SITE,
+    pages: [],
+    posts: [{ slug: 'x', title: 'X', date: '2026-01-01', html: '<p>bad &#99999999; entity</p>' }],
+  });
+  assert.match(out, /bad &#99999999; entity/);
+});
+
 test('buildCorpus opens with the name, the description and the facts', () => {
   const out = buildCorpus({ site: SITE, pages: [], posts: [] });
   assert.match(out, /^# Charlie Cheesman\n/);

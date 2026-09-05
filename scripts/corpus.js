@@ -40,6 +40,25 @@ const NAMED_ENTITIES = {
 };
 
 /**
+ * Whether a Unicode code point belongs in a text file. Guards the numeric-entity
+ * decode below: `&#99999999;` and `&#xFFFFFFFF;` are not valid code points at all -
+ * `String.fromCodePoint` throws on them, and since `buildCorpus` runs unconditionally
+ * inside `npm run build`, one malformed entity in any future post would take the whole
+ * build down rather than just degrading its own line. Surrogate halves and control
+ * characters (other than tab and newline, which the rest of the pipeline already
+ * turns into normal whitespace) are technically valid code points but have no
+ * business in a knowledge-base text file either, so they are rejected the same way.
+ */
+function isTextCodePoint(cp) {
+  if (cp > 0x10ffff) return false;
+  if (cp >= 0xd800 && cp <= 0xdfff) return false;
+  if (cp === 0x09 || cp === 0x0a) return true;
+  if (cp < 0x20) return false;
+  if (cp >= 0x7f && cp <= 0x9f) return false;
+  return true;
+}
+
+/**
  * An HTML fragment as readable prose. Block tags become line breaks; list items keep
  * their bullet.
  *
@@ -58,6 +77,11 @@ const NAMED_ENTITIES = {
  * "&#x27;" and then that would decode again to "'" - silently turning quoted-out
  * markup into real punctuation. Numeric-first, amp-last means it only ever unescapes
  * once.
+ *
+ * Each numeric replacer checks `isTextCodePoint` and returns the entity untouched
+ * when it fails - not decoded, not dropped, not thrown. Leaving `&#99999999;`
+ * visible in the output is a fine outcome: it's obvious and harmless, and a human
+ * can go look at it. Killing the build over it, or silently emitting a NUL, is not.
  */
 function toText(html) {
   return String(html)
@@ -67,8 +91,14 @@ function toText(html) {
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|h1|h2|h3|h4|li|div|article|blockquote|tr)>/gi, '\n')
     .replace(/<[^>]+>/g, '')
-    .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (whole, hex) => {
+      const cp = parseInt(hex, 16);
+      return isTextCodePoint(cp) ? String.fromCodePoint(cp) : whole;
+    })
+    .replace(/&#(\d+);/g, (whole, dec) => {
+      const cp = parseInt(dec, 10);
+      return isTextCodePoint(cp) ? String.fromCodePoint(cp) : whole;
+    })
     .replace(/&([a-zA-Z]+);/g, (whole, name) => NAMED_ENTITIES[name] || whole)
     .replace(/&amp;/g, '&')
     .replace(/[ \t]+/g, ' ')
