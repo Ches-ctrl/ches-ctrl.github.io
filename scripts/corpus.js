@@ -7,10 +7,21 @@
  * and is pushed to the platform by scripts/sync-agent.js.
  */
 
-/** An HTML fragment as readable prose. Block tags become line breaks; list items keep their bullet. */
+/**
+ * An HTML fragment as readable prose. Block tags become line breaks; list items keep
+ * their bullet.
+ *
+ * The tag-boundary pass matters more than it looks: an <a> immediately followed by a
+ * <span> with no whitespace between them in the source (as every `.entries` list on
+ * the site is written) collapses to one run-together word once the tags are gone -
+ * "Business InsiderConsulting" instead of two. It only inserts a space where two tags
+ * are adjacent, so it never touches real prose; the whitespace-collapsing passes below
+ * absorb the extra space anywhere it isn't needed.
+ */
 function toText(html) {
   return String(html)
     .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '')
+    .replace(/>(?=<)/g, '> ')
     .replace(/<li\b[^>]*>/gi, '- ')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|h1|h2|h3|h4|li|div|article|blockquote|tr)>/gi, '\n')

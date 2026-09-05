@@ -35,6 +35,13 @@ test('toText collapses runs of whitespace and blank lines', () => {
   assert.equal(toText('<p>a</p>\n\n\n\n<p>b</p>'), 'a\n\nb');
 });
 
+test('toText separates adjacent inline elements', () => {
+  assert.equal(
+    toText('<li><a href="/x">Business Insider</a><span class="meta">Consulting</span></li>'),
+    '- Business Insider Consulting'
+  );
+});
+
 test('buildCorpus opens with the name, the description and the facts', () => {
   const out = buildCorpus({ site: SITE, pages: [], posts: [] });
   assert.match(out, /^# Charlie Cheesman\n/);

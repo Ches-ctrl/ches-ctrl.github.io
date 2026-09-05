@@ -36,17 +36,17 @@ Oxford Economics & Management following dropping out of Durham Engineering.
 
 On the web
 
-- Business InsiderConsulting - the race to become AI-native
+- Business Insider Consulting - the race to become AI-native
 
-- ETN60x - the future of AI business models
+- ETN 60x - the future of AI business models
 
-- Dagens Industrithe20hr.co - a company built and sold at Lovable's 20-hour hackathon
+- Dagens Industri the20hr.co - a company built and sold at Lovable's 20-hour hackathon
 
-- The TimesUnicorn Mafia - the power of communities to create companies
+- The Times Unicorn Mafia - the power of communities to create companies
 
-- BNNUnicorn Mafia - a 16-year-old's journey from Latvia to London to SF
+- BNN Unicorn Mafia - a 16-year-old's journey from Latvia to London to SF
 
-- EdTech Innovation HubUnicorn Mafia - embodied AI hackathon sponsored by Anthropic
+- EdTech Innovation Hub Unicorn Mafia - embodied AI hackathon sponsored by Anthropic
 
 ## Work
 
@@ -195,40 +195,40 @@ Ideas
 
 A collection of ideas at various stages of development.
 
-- Net Zero from Day ZeroThere will come a day when all new companies will be Net Zero
+- Net Zero from Day Zero There will come a day when all new companies will be Net Zero
 from the day they start. There should be a platform that enables this.
 
-- The Dual Rationality HypothesisThe
+- The Dual Rationality Hypothesis The
 Joint Hypothesis Problem can
 be generalised to any test for rationality. Any test for rationality requires a model of
 rationality to test against, meaning models of rationality can never fully be rejected.
 
-- IdeawareIdeas can be thought of as software for thinking. In the same way as you
+- Ideaware Ideas can be thought of as software for thinking. In the same way as you
 have a Tech
 Stack, you can have a Personal Idea Stack. Your idea stack is the collection of ideas you use
 to interpret the world.
 
-- Impact ArbitrageWhy doesn't charitable giving behave like investing? Because there
+- Impact Arbitrage Why doesn't charitable giving behave like investing? Because there
 is no impact arbitrage. There is (1) no absolute metric for impact and (2) no means to trade
 impact among givers. If there were, charity would look more like
 effective altruism. We could
 change this.
 
-- An AMC for Carbon TaxesWhy don't companies voluntarily commit to an AMC for carbon
+- An AMC for Carbon Taxes Why don't companies voluntarily commit to an AMC for carbon
 taxes? This would incentivise governments to introduce a carbon tax.
 
-- A Marketplace for AMCsAdvance Market Commitments
+- A Marketplace for AMCs Advance Market Commitments
 will soon be privatised and apply to many markets. There should (and soon will) be a marketplace
 for AMCs.
 
-- Comparative Advantage for StartupsComparative Advantage explains
+- Comparative Advantage for Startups Comparative Advantage explains
 why startups can outcompete incumbents. They have a lower opportunity cost to effort.
 
-- Confidence ExpectationsA variable for confidence is the missing link between
+- Confidence Expectations A variable for confidence is the missing link between
 Rational Expectations and
 Behavioural Economics.
 
-- Learning Efficiency in AI SystemsLearning efficiency as a measure of AI
+- Learning Efficiency in AI Systems Learning efficiency as a measure of AI
 intelligence. How many repetitions of a game does it take for the AI system to become good,
 relative to a human?
 
@@ -242,25 +242,25 @@ Questions
 
 Thoughts and questions I keep coming back to.
 
-- Intertemporal FairnessIn what sense is it 'fair' to be born in one time period vs
+- Intertemporal Fairness In what sense is it 'fair' to be born in one time period vs
 another?
 
-- Intelligence as being General PurposeIntelligence is how general purpose something
+- Intelligence as being General Purpose Intelligence is how general purpose something
 is.
 
-- The Cost of SignallingStereotyping is the cost of our reliance on
+- The Cost of Signalling Stereotyping is the cost of our reliance on
 signalling.
 
-- Branding DiseconomiesBrands suffer from
+- Branding Diseconomies Brands suffer from
 diseconomies of scale.
 
-- The Market for NimbyismWhy don't we have a market for
+- The Market for Nimbyism Why don't we have a market for
 Nimbyism?
 
-- Meal DealsWhy are there no
+- Meal Deals Why are there no
 meal deals in other countries?
 
-- Memory PalacesWhy are we not all taught how to build
+- Memory Palaces Why are we not all taught how to build
 memory palaces?
 
 If some of these are interesting to you, reach out.
@@ -610,15 +610,15 @@ Contact
 
 Best places to find me:
 
-- linkedin.com/in/charliecheesmanLinkedIn
+- linkedin.com/in/charliecheesman LinkedIn
 
-- x.com/charliecheesma1X
+- x.com/charliecheesma1 X
 
-- github.com/Ches-ctrlCode
+- github.com/Ches-ctrl Code
 
-- moloqo.comWork
+- moloqo.com Work
 
-- unicornmafia.aiDeveloper community
+- unicornmafia.ai Developer community
 
 ## Blog post: print("Hello, World!")
 
