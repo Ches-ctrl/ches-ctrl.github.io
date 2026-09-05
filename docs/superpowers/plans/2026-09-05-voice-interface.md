@@ -91,6 +91,13 @@ test('toText turns list items into dashed lines', () => {
   assert.equal(toText('<ul><li>One</li><li>Two</li></ul>'), '- One\n- Two');
 });
 
+test('toText separates adjacent inline elements', () => {
+  assert.equal(
+    toText('<li><a href="/x">Business Insider</a><span class="meta">Consulting</span></li>'),
+    '- Business Insider Consulting'
+  );
+});
+
 test('toText decodes the entities the build emits', () => {
   assert.equal(toText('<p>Economics &amp; Management</p>'), 'Economics & Management');
 });
@@ -156,7 +163,7 @@ test('buildCorpus ends with exactly one newline', () => {
 - [ ] **Step 2: Run the test to verify it fails**
 
 ```bash
-node --test scripts/
+node --test
 ```
 
 Expected: FAIL — `Cannot find module './corpus.js'`.
@@ -177,7 +184,11 @@ Expected: FAIL — `Cannot find module './corpus.js'`.
 function toText(html) {
   return String(html)
     .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, '')
-    .replace(/<li\b[^>]*>/gi, '\n- ')
+    // The .entries lists render <a>..</a><span>..</span> with no whitespace between
+    // them, so without this the corpus reads "Business InsiderConsulting" and the
+    // agent says a mangled publication name out loud.
+    .replace(/>(?=<)/g, '> ')
+    .replace(/<li\b[^>]*>/gi, '- ')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|h1|h2|h3|h4|li|div|article|blockquote|tr)>/gi, '\n')
     .replace(/<[^>]+>/g, '')
@@ -240,10 +251,10 @@ module.exports = { toText, buildCorpus };
 - [ ] **Step 4: Run the test to verify it passes**
 
 ```bash
-node --test scripts/
+node --test
 ```
 
-Expected: PASS, 10 tests.
+Expected: PASS, 11 tests.
 
 - [ ] **Step 5: Wire it into the build**
 
@@ -1310,7 +1321,9 @@ And immediately after the `window.__ask = { ... }` object, add:
 
 - [ ] **Step 3: Handle the two failures the user will actually hit**
 
-In `connect()`, wrap the `openMic` call in the `conversation_initiation_metadata` case:
+In `connect()`, **replace** Task 5's `mic = await openMic({...});` statement and the
+`setState('listening');` that follows it — the whole span, not an insertion around it —
+with:
 
 ```js
           try {
@@ -1626,7 +1639,7 @@ platform guardrails enforce it independently of the prompt, because the prompt c
 talked past. Don't relax either: a public agent carrying someone's name will otherwise
 invent a plausible biography for them.
 
-**There is one test file**, `scripts/corpus.test.js`, run with `node --test scripts/`.
+**There is one test file**, `scripts/corpus.test.js`, run with `node --test`.
 Node's runner is built in, so this is not a dependency and not a test framework — it
 covers the corpus functions and nothing else. The rest of the feature is verified
 against the manual list in the design doc.
@@ -1634,12 +1647,12 @@ against the manual list in the design doc.
 
 - [ ] **Step 3: Update `README.md`**
 
-Add `agent:sync` to the commands, and `node --test scripts/` alongside it.
+Add `agent:sync` to the commands, and `node --test` alongside it.
 
 - [ ] **Step 4: Final check of the whole thing**
 
 ```bash
-npm run build && node --test scripts/ && git status --short
+npm run build && node --test && git status --short
 ```
 
 Expected: the build reports pages, posts, feed, sitemap, robots and `llms.txt`; the tests pass; `git status` is clean apart from what you are about to commit.
