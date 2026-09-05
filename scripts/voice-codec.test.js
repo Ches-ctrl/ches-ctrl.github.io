@@ -103,11 +103,27 @@ test('b64 -> unb64 round-trips within two quantisation steps', () => {
   }
 });
 
-test('b64 handles a buffer larger than the 0x8000 chunk boundary without truncating', () => {
-  const n = 0x8000 + 1;
+test('b64 handles a buffer past the real String.fromCharCode.apply argument limit', () => {
+  // Measured directly on this Node/V8: apply() on a byte array of 65538 or 100000
+  // still works; it throws RangeError at 131072. 0x8000 (the chunk size in the
+  // source) is nowhere near that ceiling on its own - the previous version of this
+  // test used a 0x8000+1-byte buffer, which the un-chunked, single-call
+  // `String.fromCharCode.apply(null, bytes)` also passes, so deleting the chunking
+  // loop entirely still left it green. 131072 Int16 samples = 262144 bytes clears
+  // the measured 131072-byte throw point with a 2x margin for engine variation.
+  const n = 131072;
   const f32 = new Float32Array(n);
   for (let i = 0; i < n; i++) f32[i] = ((i % 2000) / 1000) - 1; // sawtooth, exercises varied byte values
-  const encoded = b64(pcm16(f32));
+  const buf = pcm16(f32);
+  const encoded = b64(buf);
+
+  // Compare against Buffer's own base64 encoder - an independent implementation,
+  // not a re-derivation of b64's own chunking logic - so a wrong chunk boundary
+  // (off-by-one, dropped tail, doubled overlap) shows up as a string mismatch
+  // instead of merely "did not throw".
+  const expected = Buffer.from(new Uint8Array(buf)).toString('base64');
+  assert.equal(encoded, expected);
+
   const round = unb64(encoded);
   assert.equal(round.length, n); // not truncated at the chunk boundary
   const step = 2 / 32768;
