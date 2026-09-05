@@ -250,13 +250,22 @@
 
   async function connect() {
     setState('connecting');
-    ws = new WebSocket(CFG.wsUrl + '?agent_id=' + encodeURIComponent(CFG.agentId));
+    var socket = new WebSocket(CFG.wsUrl + '?agent_id=' + encodeURIComponent(CFG.agentId));
+    ws = socket;
 
-    ws.onopen = function () {
-      ws.send(JSON.stringify({ type: 'conversation_initiation_client_data' }));
+    // Handlers bind to the socket object, not to `ws` - so an abandoned socket's
+    // events still fire (a close, or even a late message, can arrive well after
+    // start()/stop() has moved `ws` on to a different conversation), and by then
+    // `mic` and `state` may belong to that newer conversation. Anything but the
+    // current socket has nothing to say about it.
+    function current() { return ws === socket; }
+
+    socket.onopen = function () {
+      socket.send(JSON.stringify({ type: 'conversation_initiation_client_data' }));
     };
 
-    ws.onmessage = async function (event) {
+    socket.onmessage = async function (event) {
+      if (!current()) return;
       var msg;
       try { msg = JSON.parse(event.data); } catch (e) { return; }
 
@@ -266,7 +275,7 @@
       // below on purpose: nothing gets a chance to pre-empt it.
       if (msg.type === 'ping') {
         var pingId = msg.ping_event && msg.ping_event.event_id;
-        ws.send(JSON.stringify({ type: 'pong', event_id: pingId }));
+        socket.send(JSON.stringify({ type: 'pong', event_id: pingId }));
         return;
       }
 
@@ -292,7 +301,7 @@
                 ', input=' + inFormat + ') - set both to a pcm_* format in the ElevenLabs dashboard'
               );
               setState('error');
-              if (ws) { try { ws.close(); } catch (e) {} }
+              try { socket.close(); } catch (e) {}
               break;
             }
 
@@ -312,7 +321,11 @@
                   : 'That microphone would not open. The questions above are the same ones I would have answered.'
               );
               setState('error');
-              if (ws) { try { ws.close(); } catch (e) {} ws = null; }
+              try { socket.close(); } catch (e) {}
+              // openMic() awaited above, so a newer connect() could have moved
+              // `ws` on in the meantime - only clear it if this socket is still
+              // the one it points to.
+              if (current()) ws = null;
               return;
             }
             setState('listening');
@@ -347,12 +360,14 @@
       }
     };
 
-    ws.onerror = function () {
+    socket.onerror = function () {
+      if (!current()) return;
       showError('That connection dropped. Try again in a moment.');
       releaseMic();
       setState('error');
     };
-    ws.onclose = function () {
+    socket.onclose = function () {
+      if (!current()) return;
       releaseMic();
       if (state !== 'error') setState('ended');
     };
