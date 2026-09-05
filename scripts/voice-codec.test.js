@@ -1,15 +1,16 @@
 'use strict';
 /**
  * Exercises the pure codec functions inside static/voice.js: downsample, pcm16,
- * b64 and unb64. Everything else in that file needs a microphone and an
- * AudioContext, neither of which exists here - these four functions are the
- * whole reason `window.__ask.__codec` exists.
+ * b64, unb64 and rateOf. Everything else in that file needs a microphone, a
+ * WebSocket and an AudioContext, none of which exist here - these functions are
+ * the whole reason `window.__ask.__codec` exists.
  *
  * static/voice.js is loaded with node:vm rather than require()d, because it is a
  * browser IIFE that assigns to `window`, not a CommonJS module. The context below
- * is deliberately minimal: at load time the file only reads `window.__askConfig`
- * and assigns `window.__ask`, so that plus btoa/atob is everything it touches
- * before start() is ever called.
+ * is deliberately minimal: at load time the file reads `window.__askConfig`,
+ * registers a `pagehide` listener and assigns `window.__ask`, so that plus
+ * btoa/atob is everything it touches before start() is ever called - hence the
+ * no-op addEventListener rather than a real event target.
  */
 const test = require('node:test');
 const assert = require('node:assert');
@@ -19,14 +20,14 @@ const vm = require('vm');
 
 function loadVoice() {
   const src = fs.readFileSync(path.join(__dirname, '..', 'static', 'voice.js'), 'utf8');
-  const window = { __askConfig: {} };
+  const window = { __askConfig: {}, addEventListener: function () {} };
   const context = { window: window, console: console, btoa: btoa, atob: atob };
   vm.createContext(context);
   vm.runInContext(src, context, { filename: 'static/voice.js' });
   return window.__ask.__codec;
 }
 
-const { downsample, pcm16, b64, unb64 } = loadVoice();
+const { downsample, pcm16, b64, unb64, rateOf } = loadVoice();
 
 // ---------------------------------------------------------------- downsample
 
@@ -129,4 +130,32 @@ test('b64 handles a buffer past the real String.fromCharCode.apply argument limi
   const step = 2 / 32768;
   assert.ok(Math.abs(round[0] - f32[0]) <= step);
   assert.ok(Math.abs(round[n - 1] - f32[n - 1]) <= step);
+});
+
+// ---------------------------------------------------------------- rateOf
+
+// This is the one place the negotiated-format design actually happens: a bug here
+// fails silently as garbled audio, not as a thrown error, which is exactly the
+// failure mode the design is meant to prevent.
+
+test('rateOf reads the rate out of a pcm_<n> format string', () => {
+  assert.equal(rateOf('pcm_16000', 16000), 16000);
+  assert.equal(rateOf('pcm_24000', 16000), 24000);
+  assert.equal(rateOf('pcm_8000', 16000), 8000);
+});
+
+test('rateOf falls back when the server omits the field', () => {
+  assert.equal(rateOf(undefined, 16000), 16000);
+});
+
+test('rateOf falls back on a non-PCM format instead of misparsing it', () => {
+  // ulaw_8000 is a real, documented ElevenLabs output format - it is NOT PCM, and
+  // treating its "8000" as a PCM sample rate would play mu-law-encoded bytes back
+  // as if they were linear 16-bit samples: noise, not silence, and not an error.
+  assert.equal(rateOf('ulaw_8000', 16000), 16000);
+});
+
+test('rateOf falls back on an empty or malformed format string', () => {
+  assert.equal(rateOf('', 16000), 16000);
+  assert.equal(rateOf('pcm_abc', 16000), 16000);
 });

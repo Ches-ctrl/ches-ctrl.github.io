@@ -140,6 +140,141 @@
     };
   }
 
+  // ---------------------------------------------------------------- playback
+
+  var out = null;        // { gain, analyser }
+  var sources = [];      // scheduled AudioBufferSourceNodes, so they can be cut
+  var cursor = 0;        // when the next chunk should start, in context time
+  var outRate = 16000;   // replaced by the negotiated rate
+
+  function ensureOutput() {
+    if (out) return out;
+    var gain = ctx.createGain();
+    var analyser = ctx.createAnalyser();
+    analyser.fftSize = 128;
+    analyser.smoothingTimeConstant = 0.6;
+    gain.connect(analyser);
+    gain.connect(ctx.destination);
+    out = { gain: gain, analyser: analyser };
+    return out;
+  }
+
+  /**
+   * Chunks arrive faster than they play, so each is scheduled at a running cursor
+   * rather than started immediately. The 50ms floor when the cursor has fallen
+   * behind absorbs a late chunk without a click.
+   */
+  function play(base64) {
+    var f32 = unb64(base64);
+    var buf = ctx.createBuffer(1, f32.length, outRate);
+    buf.getChannelData(0).set(f32);
+    var src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ensureOutput().gain);
+    var now = ctx.currentTime;
+    if (cursor < now) cursor = now + 0.05;
+    src.start(cursor);
+    cursor += buf.duration;
+    sources.push(src);
+    src.onended = function () {
+      var i = sources.indexOf(src);
+      if (i > -1) sources.splice(i, 1);
+      if (!sources.length) setState('listening');
+    };
+    setState('speaking');
+  }
+
+  /** Cut everything queued. The server sends `interruption` the moment the user talks over it. */
+  function flush() {
+    sources.forEach(function (s) { try { s.onended = null; s.stop(); } catch (e) {} });
+    sources = [];
+    cursor = 0;
+  }
+
+  // ---------------------------------------------------------------- state
+
+  var state = 'idle';
+  var stateHandlers = [];
+  var turnHandlers = [];
+
+  function setState(next) {
+    if (state === next) return;
+    state = next;
+    stateHandlers.forEach(function (fn) { fn(next); });
+  }
+
+  function emitTurn(who, text) {
+    turnHandlers.forEach(function (fn) { fn(who, text); });
+  }
+
+  // ---------------------------------------------------------------- socket
+
+  var ws = null;
+
+  /** `pcm_16000` -> 16000. The format is whatever the agent is configured for. */
+  function rateOf(format, fallback) {
+    var m = /^pcm_(\d+)$/.exec(String(format || ''));
+    return m ? parseInt(m[1], 10) : fallback;
+  }
+
+  async function connect() {
+    setState('connecting');
+    ws = new WebSocket(CFG.wsUrl + '?agent_id=' + encodeURIComponent(CFG.agentId));
+
+    ws.onopen = function () {
+      ws.send(JSON.stringify({ type: 'conversation_initiation_client_data' }));
+    };
+
+    ws.onmessage = async function (event) {
+      var msg;
+      try { msg = JSON.parse(event.data); } catch (e) { return; }
+
+      switch (msg.type) {
+        case 'conversation_initiation_metadata': {
+          var meta = msg.conversation_initiation_metadata_event || {};
+          outRate = rateOf(meta.agent_output_audio_format, 16000);
+          var inRate = rateOf(meta.user_input_audio_format, 16000);
+          ensureOutput();
+          mic = await openMic({
+            rate: inRate,
+            onChunk: function (chunk) {
+              if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ user_audio_chunk: chunk }));
+              }
+            },
+          });
+          setState('listening');
+          break;
+        }
+
+        case 'audio':
+          play(msg.audio_event.audio_base_64);
+          break;
+
+        case 'interruption':
+          flush();
+          setState('listening');
+          break;
+
+        // A missed pong drops the connection, so this is not optional.
+        case 'ping':
+          ws.send(JSON.stringify({ type: 'pong', event_id: msg.ping_event.event_id }));
+          break;
+
+        case 'user_transcript':
+          emitTurn('You', msg.user_transcription_event.user_transcript);
+          break;
+
+        case 'agent_response':
+          emitTurn('This site', msg.agent_response_event.agent_response);
+          break;
+      }
+    };
+
+    ws.onerror = function () { setState('error'); };
+    ws.onclose = function () { if (state !== 'error') setState('ended'); };
+  }
+
   // ---------------------------------------------------------------- entry
 
   /**
@@ -154,40 +289,32 @@
   }
 
   window.__ask = {
-    start: function () { ensureContext(); console.log('voice.js: context', ctx.state, ctx.sampleRate); },
-    stop: function () { if (mic) { mic.close(); mic = null; } },
-
-    /** Task 4 verification only. Records `secs` seconds at `rate`, then plays it back. */
-    __selfTest: async function (rate, secs) {
-      rate = rate || 16000;
-      secs = secs || 3;
-      ensureContext();
-      var collected = [];
-      mic = await openMic({ rate: rate, onChunk: function (_b64, f32) { collected.push(f32); } });
-      console.log('recording ' + secs + 's at ' + rate + 'Hz (context is ' + ctx.sampleRate + 'Hz)');
-      await new Promise(function (r) { setTimeout(r, secs * 1000); });
-      mic.close(); mic = null;
-
-      var total = collected.reduce(function (n, c) { return n + c.length; }, 0);
-      var all = new Float32Array(total);
-      var at = 0;
-      collected.forEach(function (c) { all.set(c, at); at += c.length; });
-      console.log('captured ' + total + ' samples = ' + (total / rate).toFixed(2) + 's; expected ~' + secs + 's');
-
-      // Round-trip through the encoder, so playback proves the encoding too.
-      var round = unb64(b64(pcm16(all)));
-      var buf = ctx.createBuffer(1, round.length, rate);
-      buf.getChannelData(0).set(round);
-      var src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.connect(ctx.destination);
-      src.start();
-      console.log('playing it back');
+    start: function () {
+      if (state !== 'idle' && state !== 'ended' && state !== 'error') return;
+      ensureContext();      // synchronous, before any await - iOS
+      ensureOutput();
+      connect();
     },
 
-    // Exposed for scripts/voice-codec.test.js. The resampler and the PCM encoder are
-    // pure functions and the only part of this file testable without a microphone,
-    // which is the whole reason they are reachable from outside the closure.
-    __codec: { downsample: downsample, pcm16: pcm16, b64: b64, unb64: unb64 },
+    stop: function () {
+      flush();
+      if (mic) { mic.close(); mic = null; }
+      if (ws) { try { ws.close(); } catch (e) {} ws = null; }
+      setState('ended');
+    },
+
+    onState: function (fn) { stateHandlers.push(fn); fn(state); },
+    onTurn: function (fn) { turnHandlers.push(fn); },
+    get state() { return state; },
+    analysers: function () { return { input: mic && mic.analyser, output: out && out.analyser }; },
+
+    // Exposed for scripts/voice-codec.test.js. The resampler, the PCM encoder and
+    // the format negotiator are pure functions and the only part of this file
+    // testable without a microphone, which is the whole reason they are reachable
+    // from outside the closure.
+    __codec: { downsample: downsample, pcm16: pcm16, b64: b64, unb64: unb64, rateOf: rateOf },
   };
+
+  // Free the microphone if the page is left mid-conversation.
+  window.addEventListener('pagehide', function () { window.__ask.stop(); });
 })();
