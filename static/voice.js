@@ -216,6 +216,12 @@
     cursor = 0;
   }
 
+  /** Every terminal path has to release the microphone, not just an explicit stop().
+      A dropped connection that leaves the worklet running feeds the next socket too. */
+  function releaseMic() {
+    if (mic) { mic.close(); mic = null; }
+  }
+
   // ---------------------------------------------------------------- state
 
   var state = 'idle';
@@ -343,9 +349,13 @@
 
     ws.onerror = function () {
       showError('That connection dropped. Try again in a moment.');
+      releaseMic();
       setState('error');
     };
-    ws.onclose = function () { if (state !== 'error') setState('ended'); };
+    ws.onclose = function () {
+      releaseMic();
+      if (state !== 'error') setState('ended');
+    };
   }
 
   // ---------------------------------------------------------------- entry
@@ -418,6 +428,12 @@
         return window.__ask.stop();
       }
       if (el.transcript && (state === 'ended' || state === 'error')) el.transcript.innerHTML = '';
+      // Belt and braces: a dropped connection's mic should already be released
+      // by ws.onerror/onclose, but a fresh conversation must never be able to
+      // inherit a live microphone or a stale socket even if some future path
+      // forgets to clean up.
+      releaseMic();
+      if (ws) { try { ws.close(); } catch (e) {} ws = null; }
       ensureContext();      // synchronous, before any await - iOS
       ensureOutput();
       connect();
@@ -425,7 +441,7 @@
 
     stop: function () {
       flush();
-      if (mic) { mic.close(); mic = null; }
+      releaseMic();
       if (ws) { try { ws.close(); } catch (e) {} ws = null; }
       setState('ended');
     },
