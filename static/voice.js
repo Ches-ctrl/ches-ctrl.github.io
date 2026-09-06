@@ -475,11 +475,15 @@
     var svg = el.wave && el.wave.__svg;
     if (!svg) return;
 
-    spread += (spreadTarget - spread) * 0.12;
+    // Under reduced motion the span must snap, not glide - easing it is still
+    // motion even with bar height held flat.
+    spread = reduced ? spreadTarget : spread + (spreadTarget - spread) * 0.12;
 
     var full = el.wave.clientWidth || 500;
-    var width = IDLE_W + (full - IDLE_W) * spread;
-    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + H);
+    // One user unit = one pixel, always. Animating the viewBox instead would scale
+    // the bars rather than move them - and inversely, since a wider viewBox in a
+    // fixed-width element makes everything smaller.
+    svg.setAttribute('viewBox', '0 0 ' + full + ' ' + H);
 
     var a = window.__ask.analysers();
     var node = state === 'speaking' ? a.output : a.input;
@@ -489,8 +493,9 @@
       node.getByteFrequencyData(bins);
     }
 
+    var span = IDLE_W + (full - IDLE_W) * spread;   // what the bars actually occupy
     var gap = 3 * spread;
-    var barW = (width - gap * (BARS - 1)) / BARS;
+    var barW = (span - gap * (BARS - 1)) / BARS;
     var t = performance.now() / 1000;
 
     for (var i = 0; i < BARS; i++) {
@@ -512,13 +517,19 @@
       r.setAttribute('width', Math.max(0.5, barW));
       r.setAttribute('y', MID - h / 2);
       r.setAttribute('height', h);
+
+      // .accent fades to transparent across its 64px; the packed rest state has to
+      // do the same or it reads as a solid dash beside a fading one. The fade lifts
+      // as the bars spread, because a waveform wants all its bars legible.
+      var fade = 1 - (i / (BARS - 1));
+      r.setAttribute('opacity', fade + (1 - fade) * spread);
     }
 
     // Settled back to the accent line with nothing running: stop burning frames.
+    // viewBox is already pinned to `full` above - nothing further to reset.
     if (spreadTarget === 0 && spread < 0.01) {
       cancelAnimationFrame(raf);
       raf = null;
-      svg.setAttribute('viewBox', '0 0 ' + IDLE_W + ' ' + H);
     }
   }
 
