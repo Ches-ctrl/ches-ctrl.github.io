@@ -300,6 +300,11 @@
                 'voice.js: agent is not configured for PCM audio (output=' + outFormat +
                 ', input=' + inFormat + ') - set both to a pcm_* format in the ElevenLabs dashboard'
               );
+              // Every other error path here shows the visitor something; this one
+              // was only ever logged, which for a voice interface is the same as
+              // not failing at all from where they're sitting - the button would
+              // just sit there doing nothing.
+              showError('This agent is set up wrong and cannot talk right now. The questions above are the same ones I would have answered.');
               setState('error');
               try { socket.close(); } catch (e) {}
               break;
@@ -308,8 +313,9 @@
             outRate = rateOf(outFormat, 16000);
             var inRate = rateOf(inFormat, 16000);
             ensureOutput();
+            var opened;
             try {
-              mic = await openMic({ rate: inRate, onChunk: function (chunk) {
+              opened = await openMic({ rate: inRate, onChunk: function (chunk) {
                 if (ws && ws.readyState === WebSocket.OPEN) {
                   ws.send(JSON.stringify({ user_audio_chunk: chunk }));
                 }
@@ -328,6 +334,14 @@
               if (current()) ws = null;
               return;
             }
+            // openMic()'s permission prompt can sit open for as long as the visitor
+            // takes to answer it - long enough for them to cancel this connection
+            // and start a new one before granting access. Re-check here, not just
+            // before the await: a stale success is just as live a leak as a stale
+            // failure would be, and without this a `mic` nothing will ever close
+            // gets assigned into a conversation that has already moved on.
+            if (!current()) { opened.close(); return; }
+            mic = opened;
             setState('listening');
             break;
           }
@@ -379,9 +393,18 @@
    * iOS will not start an AudioContext outside a user gesture, and an `await`
    * before the first resume() breaks the gesture chain in some Safari versions -
    * so the context is created and resumed synchronously, before anything async.
+   *
+   * On the very first click that's already too late to do here: the click loads
+   * this file with a <script> tag, and by the time script.onload calls start(),
+   * the browser is running a separate task with no user activation left in it.
+   * The stub in shell() (scripts/build.js) works around that by building and
+   * resuming the context itself, inside the click, before it ever requests this
+   * file - stashed on window.__askCtx. Adopt that one when it exists; only build
+   * a fresh one for the every-click-after-the-first case, where this function
+   * itself is still running inside the gesture.
    */
   function ensureContext() {
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!ctx) ctx = window.__askCtx || new (window.AudioContext || window.webkitAudioContext)();
     if (ctx.state === 'suspended') ctx.resume();
     return ctx;
   }
