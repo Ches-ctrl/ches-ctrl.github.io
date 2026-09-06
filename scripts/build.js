@@ -108,15 +108,27 @@ gtag('config', '${SITE.analytics}');
 (function(){
   var p=document.getElementById('ask-start');
   if(!p||!window.WebSocket||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return;
-  if(!(window.AudioContext||window.webkitAudioContext)) return;
+  var AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) return;
   window.__askConfig={agentId:'${SITE.agent.id}',wsUrl:'${SITE.agent.wsUrl}'};
   p.hidden=false;
+  var loading=false;
   p.firstElementChild.addEventListener('click',function(e){
     e.preventDefault();
     if(window.__ask) return window.__ask.start();
+    if(loading) return;
+    // Built and resumed right here, inside the click, because this is the only
+    // user gesture in the whole flow - script.onload below fires from a separate
+    // task with no activation of its own, and iOS Safari will not resume a context
+    // created there. voice.js's ensureContext() adopts window.__askCtx instead of
+    // making its own for exactly this reason.
+    if(!window.__askCtx){window.__askCtx=new AC();}
+    if(window.__askCtx.state==='suspended'){window.__askCtx.resume();}
+    loading=true;
     var s=document.createElement('script');
     s.src='/static/voice.js';
     s.onload=function(){window.__ask.start()};
+    s.onerror=function(){loading=false;p.firstElementChild.textContent='That failed to load - try again →';};
     document.head.appendChild(s);
   });
 })();
