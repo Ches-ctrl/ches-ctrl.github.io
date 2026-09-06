@@ -60,10 +60,21 @@ function conversationConfig(prompt, docId) {
         llm: 'gemini-2.5-flash',
         temperature: 0.3,
         knowledge_base: [{ type: 'file', id: docId, name: 'charliecheesman.net', usage_mode: 'auto' }],
-        built_in_tools: { end_call: {} },
+        // SystemToolConfig is discriminated on `type` at the top level and on
+        // `params.system_tool_type` underneath - both literally "system" and
+        // "end_call" respectively, plus a required `name`. Verified against
+        // ElevenLabs' current agent-create schema; `{ end_call: {} }` is missing
+        // all three required fields and 422s on the first real sync.
+        built_in_tools: {
+          end_call: { type: 'system', name: 'end_call', description: '', params: { system_tool_type: 'end_call' } },
+        },
       },
     },
-    tts: { voice_id: 'onwK4e9ZLuTAKqWW03F9' },
+    // Pinned rather than left to server defaults: static/voice.js refuses anything
+    // that doesn't match /^pcm_/, so an unrelated dashboard edit to either format
+    // would silently kill the feature instead of erroring loudly like it does now.
+    tts: { voice_id: 'onwK4e9ZLuTAKqWW03F9', agent_output_audio_format: 'pcm_16000' },
+    asr: { user_input_audio_format: 'pcm_16000' },
   };
 }
 
@@ -75,14 +86,13 @@ const platformSettings = {
   auth: { enable_auth: false },
   guardrails: {
     version: '1',
-    // ElevenLabs' own guardrails documentation shows these two enable flags in
-    // camelCase - isEnabled - inside an otherwise snake_case body, on multiple
-    // fetches of the same page. Unknown fields are ignored rather than rejected,
-    // so if is_enabled turns out to be wrong the request still succeeds and the
-    // guardrail is just silently off. Sending both costs nothing; a public agent
-    // carrying Charlie's name with prompt-injection protection silently disabled
-    // is the worse failure by a wide margin. Drop the redundant key once this is
-    // confirmed against a real response.
+    // The OpenAPI spec lists only is_enabled; ElevenLabs' own published doc examples
+    // show isEnabled in the same place instead. The two disagree, and unknown fields
+    // are ignored rather than rejected, so whichever one is wrong fails silently -
+    // the request still succeeds and the guardrail is just off with nothing to say
+    // so. Sending both costs nothing; a public agent carrying Charlie's name with
+    // prompt-injection protection silently disabled is the worse failure by a wide
+    // margin. Drop the redundant key once this is confirmed against a real response.
     focus: { is_enabled: true, isEnabled: true },
     prompt_injection: { is_enabled: true, isEnabled: true },
     custom: {
@@ -123,14 +133,26 @@ async function main() {
     platform_settings: platformSettings,
   };
 
+  // The knowledge base document has to exist before this call - its id is embedded
+  // in conversation_config.agent.prompt.knowledge_base above, so uploadCorpus() can't
+  // be moved after create/update the way a "don't strand a KB doc on failure" rule
+  // would otherwise want. If the call below fails, that document is already real and
+  // orphaned, so say so here rather than leaving a bare stack trace.
   const id = SITE.agent && SITE.agent.id;
-  if (id) {
-    await call('PATCH', `/convai/agents/${id}`, body);
-    console.log(`updated agent ${id}`);
-  } else {
-    const created = await call('POST', '/convai/agents/create', body);
-    console.log(`\ncreated agent ${created.agent_id}`);
-    console.log(`put that in site.json under "agent": { "id": ... } and rebuild.`);
+  try {
+    if (id) {
+      await call('PATCH', `/convai/agents/${id}`, body);
+      console.log(`updated agent ${id}`);
+    } else {
+      const created = await call('POST', '/convai/agents/create', body);
+      console.log(`\ncreated agent ${created.agent_id}`);
+      console.log(`put that in site.json under "agent": { "id": ... } and rebuild.`);
+    }
+  } catch (err) {
+    console.error(`\nagent ${id ? 'update' : 'create'} failed, but knowledge base document ${docId} was`);
+    console.error(`already uploaded and is now orphaned - remove it yourself in the dashboard's`);
+    console.error(`knowledge base view.`);
+    throw err;
   }
 
   // Every run uploads a fresh knowledge base document rather than editing the last

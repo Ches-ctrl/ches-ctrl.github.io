@@ -146,12 +146,14 @@ The agent speaks about Charlie in the third person and declines to speak as him.
 platform guardrails enforce it independently of the prompt, because the prompt can be
 talked past. Don't relax either: a public agent carrying someone's name will otherwise
 invent a plausible biography for them. `scripts/sync-agent.js` sends the focus and
-prompt-injection guardrails' enable flags under both `is_enabled` and `isEnabled`,
-because ElevenLabs' own guardrails docs show the camelCase form nested inside an
-otherwise snake_case body, and an unknown field is silently ignored rather than
-rejected — the wrong casing wouldn't error, it would just leave the guardrail off with
-nothing to say so. The sync script also prints a reminder to open the dashboard and
-confirm the focus and prompt-injection guardrails show as enabled, because that
+prompt-injection guardrails' enable flags under both `is_enabled` and `isEnabled` —
+the OpenAPI spec lists only `is_enabled`, but ElevenLabs' own published doc examples
+show `isEnabled` in the same place, and the two disagreeing is reason enough to send
+both rather than trust either alone. An unknown field is silently ignored rather than
+rejected, so the wrong casing wouldn't error, it would just leave the guardrail off with
+nothing to say so, and the cost of the extra key is zero. The sync script also prints
+a reminder to open the dashboard and confirm the focus and prompt-injection guardrails
+show as enabled, because that
 particular gap can't be closed from the script itself.
 
 **There are two test files.** `scripts/corpus.test.js` covers the corpus functions.
