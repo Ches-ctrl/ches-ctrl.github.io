@@ -1,7 +1,9 @@
 # charliecheesman.net
 
-Static HTML, one stylesheet, no webfonts, no client-side JavaScript.
-Served by GitHub Pages from the repo root on `main`.
+Static HTML, one stylesheet, no webfonts. Nothing blocks the first paint: the only
+script that runs is an async Google Analytics tag, plus a voice client on `/ask/`
+that isn't fetched until someone clicks it — every other page still loads exactly
+what it always has. Served by GitHub Pages from the repo root on `main`.
 
 Modelled on [paulgraham.com](https://www.paulgraham.com) and
 [patrickcollison.com](https://patrickcollison.com): left-aligned, vertical index, the HTML
@@ -62,5 +64,5 @@ scripts/build.js    the build; the page shell is defined once, in shell()
 
 Anything marked generated is overwritten by `npm run build` — edit the source, not the output.
 
-`marked` is the only dependency and runs at build time to turn Markdown into HTML.
-Nothing ships to the browser.
+`marked` is the only dependency and runs at build time to turn Markdown into HTML;
+none of it ships to the browser.
