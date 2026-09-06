@@ -7,7 +7,7 @@ what it always has. Served by GitHub Pages from the repo root on `main`.
 
 Modelled on [paulgraham.com](https://www.paulgraham.com) and
 [patrickcollison.com](https://patrickcollison.com): left-aligned, vertical index, the HTML
-contains the text, every piece of writing has a real URL, and nothing blocks the first paint.
+contains the text, and every piece of writing has a real URL.
 
 ## Add a blog post
 
@@ -51,15 +51,20 @@ To add or rename a nav entry, edit `site.json`. To add a whole section, create
 ## Layout
 
 ```
-pages/*.html        page content (fragments) — edit these
-blog/posts/*.md     post sources — edit these
-site.json           site name + nav
+pages/*.html          page content (fragments) — edit these
+blog/posts/*.md       post sources — edit these
+agent/prompt.md       the voice agent's system prompt — edit this
+site.json             site name + nav
 
-index.html          generated
-about/ ideas/ ...   generated
-blog/<slug>/        generated
-static/style.css    the only stylesheet
-scripts/build.js    the build; the page shell is defined once, in shell()
+index.html            generated
+about/ ideas/ ...     generated
+blog/<slug>/          generated
+llms.txt              generated — the voice agent's knowledge base, from corpus.js
+static/style.css      the only stylesheet
+static/voice.js       the voice client for /ask/, fetched only on click
+scripts/build.js      the build; the page shell is defined once, in shell()
+scripts/corpus.js     builds llms.txt from the same pages and posts as the site
+scripts/sync-agent.js pushes the corpus, prompt and guardrails to ElevenLabs — not part of the build
 ```
 
 Anything marked generated is overwritten by `npm run build` — edit the source, not the output.

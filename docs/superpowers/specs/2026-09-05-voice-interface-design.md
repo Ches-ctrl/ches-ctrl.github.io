@@ -261,7 +261,7 @@ different ways and only one of them is testable the usual way.
 function work: given pages and posts, produce text. Node's built-in test runner needs
 no installation and adds no dependency, so it costs nothing, and it is not the
 jest-or-vitest install that `CLAUDE.md` is right to have avoided. This is a narrow,
-deliberate addition — `node --test scripts/` covers the build, and nothing else.
+deliberate addition — bare `node --test` covers the build, and nothing else.
 
 **Answer quality — automated, on the platform.** ElevenLabs' own agent tests, using
 their `llm` and `simulation` types, cover what the agent says and, more importantly,
