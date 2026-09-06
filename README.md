@@ -27,8 +27,13 @@ contains the text, every piece of writing has a real URL, and nothing blocks the
    ```bash
    npm run build
    npm run serve      # http://localhost:3000
+   node --test        # runs scripts/corpus.test.js and scripts/voice-codec.test.js
    git add -A && git commit -m "post: how to do great work" && git push
    ```
+
+   New writing changes what the voice agent at `/ask/` knows, since its knowledge base
+   is generated from the same pages and posts. Push it with `npm run agent:sync`
+   (needs `ELEVENLABS_API_KEY`) once you're happy with what you published.
 
 `blog/posts/how-to-do-great-work.md` is served at `/blog/how-to-do-great-work/`.
 Renaming, deleting or drafting a post removes its old page on the next build.

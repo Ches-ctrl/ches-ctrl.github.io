@@ -160,8 +160,7 @@ ${nav}
   <main>
 ${body}
   </main>
-</div>
-${stub}
+</div>${stub}
 </body>
 </html>
 `;
