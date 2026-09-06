@@ -13,6 +13,7 @@
 const fs = require('fs');
 const path = require('path');
 const { marked } = require('marked');
+const { buildCorpus } = require('./corpus.js');
 
 const ROOT = path.join(__dirname, '..');
 const SITE = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.json'), 'utf8'));
@@ -53,7 +54,7 @@ function write(relPath, html) {
  * it, so the no-JavaScript rule still holds and nothing is added to the critical
  * path. It is emitted only where it earns its place - the home page and posts.
  */
-function shell({ title, description, currentPath, url, body, source = 'pages/', ogType = 'website', jsonLd = null, noindex = false, nameHeading = false }) {
+function shell({ title, description, currentPath, url, body, source = 'pages/', ogType = 'website', jsonLd = null, noindex = false, nameHeading = false, voice = false }) {
   const nav = SITE.nav
     .map((n) => {
       const current = n.path === currentPath ? ' class="current"' : '';
@@ -97,6 +98,46 @@ gtag('config', '${SITE.analytics}');
 </script>`
     : '';
 
+  // The voice interface, on /ask/ and nowhere else. This stub is the entire idle
+  // cost of the feature: it feature-detects, reveals the control, and on click
+  // fetches static/voice.js. Nothing else is requested until someone asks for it,
+  // which is the form the site's first-paint rule takes here - see CLAUDE.md.
+  //
+  // The AudioContext is built and resumed here, inside the click, rather than left
+  // to voice.js: this click is the only user gesture in the whole flow, and by the
+  // time script.onload below can call start(), the browser is running a separate
+  // task with none of that gesture left in it - iOS Safari will not resume a
+  // context created there. voice.js's ensureContext() adopts window.__askCtx
+  // instead of making its own for exactly this reason. Comments explaining that
+  // stay here rather than in the emitted stub, which should stay small.
+  const stub = voice && SITE.agent && SITE.agent.id
+    ? `
+<script>
+(function(){
+  var p=document.getElementById('ask-start');
+  if(!p||!window.WebSocket||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return;
+  var AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) return;
+  window.__askConfig={agentId:'${SITE.agent.id}',wsUrl:'${SITE.agent.wsUrl}'};
+  p.hidden=false;
+  var loading=false;
+  p.firstElementChild.addEventListener('click',function(e){
+    e.preventDefault();
+    if(window.__ask) return window.__ask.start();
+    if(loading) return;
+    if(!window.__askCtx){window.__askCtx=new AC();}
+    if(window.__askCtx.state==='suspended'){window.__askCtx.resume();}
+    loading=true;
+    var s=document.createElement('script');
+    s.src='/static/voice.js';
+    s.onload=function(){window.__ask.start()};
+    s.onerror=function(){loading=false;p.firstElementChild.textContent='That failed to load - try again →';};
+    document.head.appendChild(s);
+  });
+})();
+</script>`
+    : '';
+
   return `<!-- GENERATED FILE - DO NOT EDIT.
      Your changes here are overwritten by the next \`npm run build\`.
      Edit the source instead: ${esc(source)} -->
@@ -134,7 +175,7 @@ ${nav}
   <main>
 ${body}
   </main>
-</div>
+</div>${stub}
 </body>
 </html>
 `;
@@ -274,6 +315,7 @@ function buildPages() {
           url: n.path,
           body: stripNotes(externalLinks(inlineLogos(read(`pages/${n.page}.html`).trimEnd()))),
           source: `pages/${n.page}.html`,
+          voice: n.page === 'ask',
         })
       );
     });
@@ -511,6 +553,20 @@ const postCount = buildBlog(posts);
 buildFeed(posts);
 const urlCount = buildSitemap(posts);
 
+// The site as plain text, for the voice agent's knowledge base — and for anything
+// else that would rather read prose than parse ten pages of HTML. Generated here so
+// it cannot drift from the site; pushed to the platform by `npm run agent:sync`,
+// which is deliberately a separate command because it needs a credential.
+const corpusPages = SITE.nav
+  .filter((n) => n.page)
+  .map((n) => ({
+    label: n.label,
+    path: n.path,
+    description: n.description,
+    html: stripNotes(read(`pages/${n.page}.html`)),
+  }));
+write('llms.txt', buildCorpus({ site: SITE, pages: corpusPages, posts }));
+
 console.log(
-  `${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}, feed.xml, sitemap.xml (${urlCount} urls), robots.txt`
+  `${pageCount} pages, ${postCount} post${postCount === 1 ? '' : 's'}, feed.xml, sitemap.xml (${urlCount} urls), robots.txt, llms.txt`
 );

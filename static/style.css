@@ -203,3 +203,38 @@ img { max-width: 100%; height: auto; }
   .timeline .when { text-align: left; margin-bottom: 0.35em; }
   .timeline .what { border-left: 0; padding-left: 0; }
 }
+
+/* ---- ask ---- */
+
+#ask-start { margin-top: 1.6em; }
+
+/* The accent line again, in the content column, where the interaction is. At rest
+   the bars (count varies with the column's width - see BARS in voice.js) are
+   packed into 64px at 2px tall - the same mark as .accent above the name.
+   `spread` in voice.js eases them apart into the waveform and back. */
+
+#ask-wave {
+  height: 18px;
+  margin: 1.6em 0 0;
+  display: block;
+}
+
+#ask-wave svg { display: block; width: 100%; height: 18px; }
+
+#ask-wave rect {
+  fill: var(--accent);
+  transition: fill 120ms ease-out;
+}
+
+/* Listening is the visitor's own voice, so it takes the colour of body copy.
+   Speaking is the site's, so it takes the site's accent. No label needed. */
+#ask-wave.on rect { fill: #333; }
+#ask-wave.on.speaking rect { fill: var(--accent); }
+
+.ask-turn { margin-top: 1.2em; }
+/* Type and colour come from .byline, per the design doc - this only adds the
+   block layout a <span> doesn't have by default. */
+.ask-turn .who { display: block; }
+.ask-turn p { margin: 0.2em 0 0; color: #333; line-height: 18px; }
+
+#ask-error { margin-top: 1.2em; }
