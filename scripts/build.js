@@ -102,6 +102,14 @@ gtag('config', '${SITE.analytics}');
   // cost of the feature: it feature-detects, reveals the control, and on click
   // fetches static/voice.js. Nothing else is requested until someone asks for it,
   // which is the form the site's first-paint rule takes here - see CLAUDE.md.
+  //
+  // The AudioContext is built and resumed here, inside the click, rather than left
+  // to voice.js: this click is the only user gesture in the whole flow, and by the
+  // time script.onload below can call start(), the browser is running a separate
+  // task with none of that gesture left in it - iOS Safari will not resume a
+  // context created there. voice.js's ensureContext() adopts window.__askCtx
+  // instead of making its own for exactly this reason. Comments explaining that
+  // stay here rather than in the emitted stub, which should stay small.
   const stub = voice && SITE.agent && SITE.agent.id
     ? `
 <script>
@@ -117,11 +125,6 @@ gtag('config', '${SITE.analytics}');
     e.preventDefault();
     if(window.__ask) return window.__ask.start();
     if(loading) return;
-    // Built and resumed right here, inside the click, because this is the only
-    // user gesture in the whole flow - script.onload below fires from a separate
-    // task with no activation of its own, and iOS Safari will not resume a context
-    // created there. voice.js's ensureContext() adopts window.__askCtx instead of
-    // making its own for exactly this reason.
     if(!window.__askCtx){window.__askCtx=new AC();}
     if(window.__askCtx.state==='suspended'){window.__askCtx.resume();}
     loading=true;
