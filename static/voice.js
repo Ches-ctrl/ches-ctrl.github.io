@@ -311,8 +311,11 @@
               // Every other error path here shows the visitor something; this one
               // was only ever logged, which for a voice interface is the same as
               // not failing at all from where they're sitting - the button would
-              // just sit there doing nothing.
-              showError('This agent is set up wrong and cannot talk right now. The questions above are the same ones I would have answered.');
+              // just sit there doing nothing. The visitor most likely to hit this
+              // is Charlie testing a misconfigured agent, so the visible copy names
+              // the setting - not the raw format string, which console.error above
+              // already carries for whoever goes looking.
+              showError("This agent's audio format is set up wrong in the ElevenLabs dashboard, so it cannot talk right now. The questions above are the same ones I would have answered.");
               setState('error');
               try { socket.close(); } catch (e) {}
               break;
@@ -329,6 +332,17 @@
                 }
               } });
             } catch (err) {
+              // openMic() awaited above, so a newer connect() could have moved `ws`
+              // on in the meantime - exactly the race the success branch below
+              // re-checks for. A stale failure is just as live a leak as a stale
+              // success: if this isn't the current conversation any more, this
+              // socket's failure has nothing to say about it. Close the dead
+              // socket and stop, without touching the current conversation's UI
+              // or its live `ws`.
+              if (!current()) {
+                try { socket.close(); } catch (e) {}
+                return;
+              }
               showError(
                 err && err.name === 'NotAllowedError'
                   ? 'No microphone access, so there is nothing to listen to. The questions above are the same ones I would have answered.'
@@ -336,10 +350,7 @@
               );
               setState('error');
               try { socket.close(); } catch (e) {}
-              // openMic() awaited above, so a newer connect() could have moved
-              // `ws` on in the meantime - only clear it if this socket is still
-              // the one it points to.
-              if (current()) ws = null;
+              ws = null;
               return;
             }
             // openMic()'s permission prompt can sit open for as long as the visitor

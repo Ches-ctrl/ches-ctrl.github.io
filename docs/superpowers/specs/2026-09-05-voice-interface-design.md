@@ -19,11 +19,13 @@ waived here; it is restated in a form this feature can satisfy:
 
 > **Nothing loads until the visitor asks for it.**
 
-The idle cost of `/ask/` is around 600 bytes of inline JavaScript: a button and a lazy
-loader. The client, the microphone, the WebSocket and every byte of audio are fetched
-inside the click handler. For any visitor who never clicks — which is most of them,
-and every crawler — the page is still the HTML and the stylesheet, exactly as before.
-No other page on the site changes at all.
+The idle cost of `/ask/` is around 990 bytes of inline JavaScript: a button and a lazy
+loader, plus the AudioContext setup and in-flight guard later builds added to keep the
+click gesture intact on iOS. The client, the microphone, the WebSocket and every byte
+of audio are fetched inside the click handler. For any visitor who never clicks — which
+is most of them, and every crawler — the page is still the HTML and the stylesheet,
+exactly as before: the stub adds bytes to that one request, not a second one. No other
+page on the site changes at all.
 
 This is a better rule than the one it replaces. "Two requests" was always a proxy for
 what actually mattered; "nothing before an interaction" is the thing itself, and it
@@ -210,9 +212,16 @@ is already his comes alive.
 | Speaking | The same waveform in `--accent` cyan |
 | Ending | Collapses back to 64px |
 
-The waveform itself is an array of roughly 24 rounded rects, 2px wide and 3px apart,
-18px tall — one `line-height`, so it sits in the text flow rather than on top of it.
-Heights come from `getByteFrequencyData` on a logarithmic scale.
+The waveform itself is an array of rounded rects, 18px tall — one `line-height`, so it
+sits in the text flow rather than on top of it. Width and gap are the fixed values: 2px
+bars on a 5px pitch (2px bar, 3px gap), because a fixed bar count fattened to fill a
+wide column reads as a chunky bar chart, not the hairline waveform this wants. Fixing
+the pitch instead means the count has to follow the container — one bar per 5px of the
+measure, so roughly 100 of them at 500px, with 24 as the floor for anything narrower.
+That count only shows up once the line has spread into a waveform, though: at rest,
+whatever the count, the bars pack edge-to-edge with no gap into exactly 64px — the same
+width as `.accent` — so the idle state is pixel-identical to the mark that was already
+on every page. Heights come from `getByteFrequencyData` on a logarithmic scale.
 
 The thing that makes Wispr Flow's animation feel liquid rather than twitchy is that
 amplitude never drives a bar directly. It drives a *target*, and each bar eases toward

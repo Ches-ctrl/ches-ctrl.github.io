@@ -21,11 +21,12 @@ request. It is `async`, so it stays off the critical path and first paint is sti
 the stylesheet alone — but the page is no longer two requests in total.
 
 The voice interface on `/ask/` is the larger exception, and it is the one that pays for
-itself. Its idle cost is a ~600-byte inline stub that feature-detects and reveals a
-link. `static/voice.js`, the microphone, the WebSocket and every byte of audio load
-inside the click handler, so a visitor who never clicks — which is most of them, and
-every crawler — gets exactly the page they got before. No other page carries any part
-of it. See `docs/superpowers/specs/2026-09-05-voice-interface-design.md`.
+itself. Its idle cost is a ~990-byte inline stub that feature-detects and reveals a
+link. The number isn't the point — it's what the number buys: `static/voice.js`, the
+microphone, the WebSocket and every byte of audio load inside the click handler, so a
+visitor who never clicks — which is most of them, and every crawler — pays that ~990
+bytes and nothing more. No other page carries any part of it. See
+`docs/superpowers/specs/2026-09-05-voice-interface-design.md`.
 
 Both are qualifications, not precedents. The test for a third is the same one these
 passed: does it cost a visitor who does not use it anything at all? If the answer is
@@ -120,9 +121,13 @@ other page on this site put together. Don't add the SDK back without re-measurin
 Audio rates are read off `conversation_initiation_metadata`, never hardcoded. Change
 the agent's output format in the dashboard and the client follows; hardcode 16000 and
 it fails as garbled audio rather than as an error. A negotiated format that isn't
-`pcm_*` is refused outright, with a visible error naming the format, rather than fed
-through the PCM path anyway — that would come out as noise with nothing in the
-console to say why.
+`pcm_*` is refused outright, rather than fed through the PCM path anyway — that would
+come out as noise with nothing to say why. The visible error is one plain sentence
+naming the setting — the agent's audio format, in the ElevenLabs dashboard — but not
+the negotiated value itself: the person most likely to hit this is Charlie with a
+misconfigured agent, and a message that points at which setting is wrong is worth more
+to him than a raw format string would be. `console.error` carries that detail — both
+formats negotiated, by name — for whoever goes looking.
 
 Every WebSocket handler checks that its socket is still the current one before
 touching shared state, because a handler is bound to the socket object it was created
