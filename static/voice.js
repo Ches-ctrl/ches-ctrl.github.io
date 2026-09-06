@@ -260,6 +260,12 @@
     // current socket has nothing to say about it.
     function current() { return ws === socket; }
 
+    // The server is only ever expected to send this once per socket. Guarded
+    // anyway: a second one re-running the case below would await a fresh
+    // openMic() and overwrite `mic` with it on success, leaking the first
+    // stream - nothing would ever call close() on it again.
+    var initiated = false;
+
     socket.onopen = function () {
       socket.send(JSON.stringify({ type: 'conversation_initiation_client_data' }));
     };
@@ -285,6 +291,8 @@
       try {
         switch (msg.type) {
           case 'conversation_initiation_metadata': {
+            if (initiated) break;
+            initiated = true;
             var meta = msg.conversation_initiation_metadata_event || {};
             var outFormat = meta.agent_output_audio_format || '';
             var inFormat = meta.user_input_audio_format || '';
@@ -446,7 +454,7 @@
     var div = document.createElement('div');
     div.className = 'ask-turn';
     var label = document.createElement('span');
-    label.className = 'who';
+    label.className = 'byline who';   // byline for the type; who only for display:block
     label.textContent = who;
     var p = document.createElement('p');
     p.textContent = text;      // textContent, not innerHTML - this is untrusted output
@@ -463,10 +471,19 @@
 
   // ---------------------------------------------------------------- the line
 
-  var BARS = 24, W = 2, H = 18, MID = H / 2, IDLE_W = 64;
+  var H = 18, MID = H / 2, IDLE_W = 64;
   var SVG_NS = 'http://www.w3.org/2000/svg';
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // The bar COUNT adapts to the container, not the bar width - a fixed count with
+  // a fattened width to fill a wide column is what read as a chunky bar chart
+  // instead of the 2px hairlines the design calls for. 5px is the full-spread
+  // pitch (2px bar + 3px gap); 24 is both the pre-measurement placeholder below
+  // and the floor for a container too narrow to be worth spacing out further.
+  // At rest the bars pack edge-to-edge into IDLE_W with no gap regardless of how
+  // many there are, so this choice never affects the packed accent-line look -
+  // only how fine-grained the waveform is once it spreads out.
+  var BARS = 24;
   var rects = [];
   var heights = new Array(BARS).fill(2);   // eased, never set from amplitude directly
   var spread = 0;                          // 0 = the accent line, 1 = the waveform
@@ -475,6 +492,13 @@
 
   function buildWave() {
     if (!el.wave || rects.length) return;
+    // Computed once, here, rather than kept in sync with future resizes - a count
+    // chosen for the width at first use stays close enough after a resize that
+    // only the easing loop would ever show the drift, and rebuilding the SVG's
+    // rects mid-conversation risked visibly restarting the animation.
+    var full = el.wave.clientWidth || 500;
+    BARS = Math.max(24, Math.floor(full / 5));
+    heights = new Array(BARS).fill(2);
     var svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('preserveAspectRatio', 'none');
     svg.setAttribute('viewBox', '0 0 ' + IDLE_W + ' ' + H);
@@ -553,6 +577,17 @@
     if (spreadTarget === 0 && spread < 0.01) {
       cancelAnimationFrame(raf);
       raf = null;
+      return;
+    }
+
+    // Under reduced motion, spread snaps instead of easing and amplitude never
+    // drives a bar (bins is skipped, idle breathing is skipped) - so once spread
+    // has caught up to its target, every later frame during a whole conversation
+    // would write the same ~BARS attributes over again for nothing. Stop here;
+    // animate() sets raf again the moment spreadTarget actually changes.
+    if (reduced && spread === spreadTarget) {
+      cancelAnimationFrame(raf);
+      raf = null;
     }
   }
 
@@ -567,11 +602,14 @@
       if (state === 'listening' || state === 'speaking' || state === 'connecting') {
         return window.__ask.stop();
       }
-      if (el.transcript && (state === 'ended' || state === 'error')) el.transcript.innerHTML = '';
+      if (el.transcript && (state === 'ended' || state === 'error')) el.transcript.replaceChildren();
       // Belt and braces: a dropped connection's mic should already be released
       // by ws.onerror/onclose, but a fresh conversation must never be able to
-      // inherit a live microphone or a stale socket even if some future path
-      // forgets to clean up.
+      // inherit a live microphone, a stale socket or the previous conversation's
+      // queued audio even if some future path forgets to clean up - a socket that
+      // dies mid-utterance leaves sources scheduled on a cursor that would otherwise
+      // keep playing out over whatever the next conversation says.
+      flush();
       releaseMic();
       if (ws) { try { ws.close(); } catch (e) {} ws = null; }
       ensureContext();      // synchronous, before any await - iOS
